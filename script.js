@@ -59,29 +59,11 @@ ${jsContent}
     link.click();
 }
 
-// ---------------- Nomor Baris ----------------
-function updateLineNumbers(id) {
-    const codeArea = document.getElementById(id);
-    const lineNumberElem = document.getElementById(`lines-${id}`);
-    
-    // Perbaikan: gunakan style.css untuk mengatur font agar lurus
-    const textContent = codeArea.innerText;
-    const lines = textContent.trim().split("\n").length;
-    
-    // Jika tidak ada teks, jangan tampilkan nomor baris, atau tampilkan hanya satu baris
-    if (textContent.trim() === "") {
-        lineNumberElem.innerHTML = '1';
-    } else {
-        lineNumberElem.innerHTML = Array.from({ length: lines }, (_, i) => i + 1).join("<br>");
-    }
-}
-
 // Tambahkan event listener untuk setiap area kode
 ["html", "css", "js"].forEach(lang => {
     const codeArea = document.getElementById(lang);
     codeArea.addEventListener("input", () => {
         runCode();
-        updateLineNumbers(lang);
         if (lang === "html") checkHTMLTags();
     });
     // Sinkronkan guliran antara area kode dan nomor baris
@@ -159,9 +141,6 @@ window.onload = () => {
     // Atur tema
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "light") document.body.classList.add("light");
-
-    // Perbarui nomor baris saat inisialisasi
-    ["html", "css", "js"].forEach(lang => updateLineNumbers(lang));
     
     // Jalankan kode dan periksa kesalahan pada saat memuat
     runCode();
