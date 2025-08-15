@@ -108,3 +108,15 @@ footer {
         height: 50%;
     }
 }
+
+/* Warna highlight untuk HTML */
+.tag {
+    color: #4da6ff; /* biru untuk nama tag */
+}
+.attr {
+    color: #ff9800; /* oranye untuk atribut */
+}
+.value {
+    color: #4caf50; /* hijau untuk nilai atribut */
+}
+
