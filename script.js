@@ -15,8 +15,8 @@ function openTab(tab) {
 
 // ---------------- Jalankan & Simpan ----------------
 function runCode() {
-    // Gunakan innerHTML untuk HTML dan innerText untuk CSS/JS
-    const html = document.getElementById("html").innerHTML;
+    // Gunakan innerText untuk HTML, CSS, dan JS agar iframe dapat merender kode dengan benar
+    const html = document.getElementById("html").innerText;
     const css = `<style>${document.getElementById("css").innerText}</style>`;
     const js = `<script>${document.getElementById("js").innerText}<\/script>`;
 
@@ -32,7 +32,7 @@ function runCode() {
 }
 
 function saveAsFile() {
-    const htmlContent = document.getElementById("html").innerHTML;
+    const htmlContent = document.getElementById("html").innerText;
     const cssContent = document.getElementById("css").innerText;
     const jsContent = document.getElementById("js").innerText;
 
@@ -146,7 +146,7 @@ function toggleTheme() {
 // ---------------- Inisialisasi ----------------
 window.onload = () => {
     // Muat kode terakhir dari localStorage
-    document.getElementById("html").innerHTML = localStorage.getItem("htmlCode") || `<h1>Hello World!</h1>\n<p>This is my first HTML page.</p>`;
+    document.getElementById("html").innerText = localStorage.getItem("htmlCode") || `<h1>Hello World!</h1>\n<p>This is my first HTML page.</p>`;
     document.getElementById("css").innerText = localStorage.getItem("cssCode") || `body {\n    font-family: Arial, sans-serif;\n    background-color: #f0f0f0;\n    color: #333;\n}\nh1 {\n    color: #4CAF50;\n}`;
     document.getElementById("js").innerText = localStorage.getItem("jsCode") || `console.log("Hello from JavaScript!");`;
 
