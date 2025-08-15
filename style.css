@@ -1,0 +1,110 @@
+:root {
+    --bg-color: #1e1e1e;
+    --text-color: #f1f1f1;
+    --header-footer-bg: #222;
+    --tab-bg: #333;
+    --preview-bg: white;
+}
+body.light {
+    --bg-color: #ffffff;
+    --text-color: #222;
+    --header-footer-bg: #f0f0f0;
+    --tab-bg: #ddd;
+    --preview-bg: #ffffff;
+}
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background 0.3s, color 0.3s;
+}
+header {
+    background-color: var(--header-footer-bg);
+    color: var(--text-color);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+header h1 {
+    font-size: 18px;
+    margin: 0;
+}
+.header-buttons button {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-left: 5px;
+}
+main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+.editor-container {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+.tabs {
+    display: flex;
+    background: var(--tab-bg);
+}
+.tabs button {
+    flex: 1;
+    padding: 8px;
+    background: var(--tab-bg);
+    color: var(--text-color);
+    border: none;
+    cursor: pointer;
+}
+.tabs button.active {
+    background: #4CAF50;
+    color: white;
+}
+textarea {
+    flex: 1;
+    padding: 10px;
+    font-family: monospace;
+    font-size: 14px;
+    border: none;
+    outline: none;
+    resize: none;
+    background: var(--bg-color);
+    color: var(--text-color);
+    display: none;
+}
+textarea.active {
+    display: block;
+}
+iframe {
+    width: 50%;
+    border: none;
+    background: var(--preview-bg);
+}
+footer {
+    background: var(--header-footer-bg);
+    color: var(--text-color);
+    text-align: center;
+    padding: 8px;
+    font-size: 14px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+@media (max-width: 768px) {
+    main {
+        flex-direction: column;
+    }
+    .editor-container, iframe {
+        width: 100%;
+        height: 50%;
+    }
+}
