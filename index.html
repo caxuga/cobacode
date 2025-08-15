@@ -1,197 +1,139 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CobaCode</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        header {
-            background-color: #222;
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        header h1 {
-            font-size: 18px;
-            margin: 0;
-        }
-        .header-buttons button {
-            background: #4CAF50;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            cursor: pointer;
-            border-radius: 4px;
-            margin-left: 5px;
-        }
-        main {
-            flex: 1;
-            display: flex;
-            overflow: hidden;
-        }
-        .editor-container {
-            width: 50%;
-            display: flex;
-            flex-direction: column;
-        }
-        .tabs {
-            display: flex;
-            background: #333;
-        }
-        .tabs button {
-            flex: 1;
-            padding: 8px;
-            background: #333;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .tabs button.active {
-            background: #4CAF50;
-        }
-        textarea {
-            flex: 1;
-            padding: 10px;
-            font-family: monospace;
-            font-size: 14px;
-            border: none;
-            outline: none;
-            resize: none;
-            background: #1e1e1e;
-            color: #f1f1f1;
-            display: none;
-        }
-        textarea.active {
-            display: block;
-        }
-        iframe {
-            width: 50%;
-            border: none;
-            background: white;
-        }
-        footer {
-            background: #222;
-            color: white;
-            text-align: center;
-            padding: 8px;
-            font-size: 14px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-        @media (max-width: 768px) {
-            main {
-                flex-direction: column;
-            }
-            .editor-container, iframe {
-                width: 100%;
-                height: 50%;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HTML Live Editor</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/919/919827.png" type="image/png">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      flex-direction: column;
+    }
+    header {
+      background: #333;
+      color: white;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 18px;
+    }
+    header input[type="color"] {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      height: 100%;
+    }
+    textarea {
+      width: 50%;
+      border: none;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+    }
+    iframe {
+      width: 50%;
+      border: none;
+      background: white;
+    }
+    footer {
+      background: #333;
+      color: white;
+      padding: 8px 15px;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 13px;
+    }
+    button {
+      background: #007bff;
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      margin-left: 5px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>CobaCode</h1>
-        <div class="header-buttons">
-            <button onclick="runCode()">Run</button>
-            <button onclick="saveAsFile()">Save As</button>
-        </div>
-    </header>
-    <main>
-        <div class="editor-container">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="openTab('html')">HTML</button>
-                <button class="tab-btn" onclick="openTab('css')">CSS</button>
-                <button class="tab-btn" onclick="openTab('js')">JavaScript</button>
-            </div>
-            <textarea id="html" class="active"></textarea>
-            <textarea id="css"></textarea>
-            <textarea id="js"></textarea>
-        </div>
-        <iframe id="preview"></iframe>
-    </main>
+  <header>
+    <h1>HTML Live Editor</h1>
+    <div>
+      <label style="color: white; margin-right: 5px;">Warna Editor:</label>
+      <input type="color" id="colorPicker" value="#f5f5f5">
+      <button onclick="saveAsFile()">💾 Save As</button>
+    </div>
+  </header>
 
-    <footer>
-        © 2025 CobaCode by Agus Widodo FN. — Powered by HTML, CSS & JavaScript
-    </footer>
-
-    <script>
-        function openTab(tab) {
-            document.querySelectorAll('textarea').forEach(el => el.classList.remove('active'));
-            document.getElementById(tab).classList.add('active');
-
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-        }
-
-        function runCode() {
-            const html = document.getElementById("html").value;
-            const css = `<style>${document.getElementById("css").value}</style>`;
-            const js = `<script>${document.getElementById("js").value}<\/script>`;
-
-            const iframeDoc = document.getElementById("preview").contentDocument || document.getElementById("preview").contentWindow.document;
-            iframeDoc.open();
-            iframeDoc.write(html + css + js);
-            iframeDoc.close();
-
-            // Simpan ke LocalStorage
-            localStorage.setItem("htmlCode", html);
-            localStorage.setItem("cssCode", document.getElementById("css").value);
-            localStorage.setItem("jsCode", document.getElementById("js").value);
-        }
-
-        // Tombol Save As
-        function saveAsFile() {
-            const htmlContent = document.getElementById("html").value;
-            const cssContent = document.getElementById("css").value;
-            const jsContent = document.getElementById("js").value;
-
-            const finalCode = `
+  <main>
+    <textarea id="editor" placeholder="Tulis kode HTML di sini...">
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-${cssContent}
-</style>
+<title>Contoh</title>
 </head>
 <body>
-${htmlContent}
-<script>
-${jsContent}
-<\/script>
+<h1>Halo Dunia!</h1>
+<p>Ini adalah contoh HTML.</p>
 </body>
 </html>
-`;
+    </textarea>
+    <iframe id="preview"></iframe>
+  </main>
 
-            const blob = new Blob([finalCode], { type: "text/html" });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "my-code.html";
-            link.click();
-        }
+  <footer>
+    Dibuat dengan ❤️ oleh Agus Widodo FN.
+  </footer>
 
-        // Live update
-        document.querySelectorAll("textarea").forEach(el => {
-            el.addEventListener("input", runCode);
-        });
+  <script>
+    const editor = document.getElementById('editor');
+    const preview = document.getElementById('preview');
+    const colorPicker = document.getElementById('colorPicker');
 
-        // Load kode terakhir
-        window.onload = () => {
-            document.getElementById("html").value = localStorage.getItem("htmlCode") || `<h1>Hello World!</h1>\n<p>This is my first HTML page.</p>`;
-            document.getElementById("css").value = localStorage.getItem("cssCode") || `body {\n    font-family: Arial, sans-serif;\n    background-color: #f0f0f0;\n    color: #333;\n}\nh1 {\n    color: #4CAF50;\n}`;
-            document.getElementById("js").value = localStorage.getItem("jsCode") || `console.log("Hello from JavaScript!");`;
-            runCode();
-        };
-    </script>
+    // Fungsi update preview
+    function updatePreview() {
+      preview.srcdoc = editor.value;
+    }
+    editor.addEventListener('input', updatePreview);
+    updatePreview();
+
+    // Ganti warna editor
+    colorPicker.addEventListener('input', () => {
+      editor.style.backgroundColor = colorPicker.value;
+    });
+
+    // Save As
+    function saveAsFile() {
+      const blob = new Blob([editor.value], { type: "text/html" });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = "index.html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  </script>
 </body>
 </html>
