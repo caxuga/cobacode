@@ -131,6 +131,38 @@ window.onload = () => {
     renderHighlight("js");
 };
 
+/* ======= UPDATE ======== */
+/* ===== UPDATE: Tambah line number ===== */
+function attachLineNumber(lang) {
+    const codeArea = document.getElementById(lang);
+    const wrapper = document.createElement("div");
+    const gutter = document.createElement("div");
+
+    wrapper.classList.add("editor-wrapper");
+    gutter.classList.add("line-numbers");
+
+    // Bungkus editor
+    codeArea.parentNode.insertBefore(wrapper, codeArea);
+    wrapper.appendChild(gutter);
+    wrapper.appendChild(codeArea);
+
+    // Event update nomor baris
+    codeArea.addEventListener("input", () => updateLineNumbers(codeArea, gutter));
+    codeArea.addEventListener("scroll", () => gutter.scrollTop = codeArea.scrollTop);
+
+    // Set awal
+    updateLineNumbers(codeArea, gutter);
+}
+
+function updateLineNumbers(area, gutter) {
+    const lines = area.innerText.split("\n").length;
+    let lineHTML = "";
+    for (let i = 1; i <= lines; i++) {
+        lineHTML += i + "<br>";
+    }
+    gutter.innerHTML = lineHTML;
+}
+
 /* ===== UPDATE: Cek tag HTML ===== */
 function checkHTMLTags() {
     const html = document.getElementById("html").innerText;
