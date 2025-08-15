@@ -65,7 +65,7 @@ function updateLineNumbers(id) {
     const lineNumberElem = document.getElementById(`lines-${id}`);
     
     // Hitung baris dengan memisahkan konten berdasarkan tag <br>
-    const lines = (codeArea.innerHTML.split(/<br>/g) || []).length;
+    const lines = codeArea.innerText.split("\n").length;
     // Buat array nomor baris dan gabungkan dengan tag <br>
     lineNumberElem.innerHTML = Array.from({ length: lines }, (_, i) => i + 1).join("<br>");
 }
