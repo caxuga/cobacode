@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CobaCode</title>
-    <link rel="icon" href="favicon.png" type="image/png">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -23,9 +22,12 @@
                 <button class="tab-btn" onclick="openTab('css')">CSS</button>
                 <button class="tab-btn" onclick="openTab('js')">JavaScript</button>
             </div>
-            <textarea id="html" class="active"></textarea>
-            <textarea id="css"></textarea>
-            <textarea id="js"></textarea>
+            <!-- HTML -->
+            <div id="html" class="code-area active" contenteditable="true"></div>
+            <!-- CSS -->
+            <div id="css" class="code-area" contenteditable="true"></div>
+            <!-- JS -->
+            <div id="js" class="code-area" contenteditable="true"></div>
         </div>
         <iframe id="preview"></iframe>
     </main>
