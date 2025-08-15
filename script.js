@@ -64,9 +64,8 @@ function updateLineNumbers(id) {
     const codeArea = document.getElementById(id);
     const lineNumberElem = document.getElementById(`lines-${id}`);
     
-    // Hitung baris dengan memisahkan konten berdasarkan tag <br>
+    // Perbaikan: gunakan style.css untuk mengatur font agar lurus
     const lines = codeArea.innerText.split("\n").length;
-    // Buat array nomor baris dan gabungkan dengan tag <br>
     lineNumberElem.innerHTML = Array.from({ length: lines }, (_, i) => i + 1).join("<br>");
 }
 
