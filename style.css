@@ -63,7 +63,9 @@ main { flex: 1; display: flex; overflow: hidden; }
   color: var(--line-num-color);
   padding: 10px 6px;
   text-align: right; user-select: none;
-  font: 14px/1.5 monospace;
+  font-family: monospace; /* Pastikan font sama */
+  font-size: 14px; /* Pastikan ukuran font sama */
+  line-height: 1.5; /* Pastikan tinggi baris sama */
   overflow: hidden;         /* scroll ikut area kode */
 }
 body.light .line-numbers { background: var(--line-num-bg); color: var(--line-num-color); }
@@ -72,7 +74,9 @@ body.light .line-numbers { background: var(--line-num-bg); color: var(--line-num
 .code-area {
   flex: 1;
   padding: 10px 12px;
-  font: 14px/1.5 monospace;
+  font-family: monospace; /* Pastikan font sama */
+  font-size: 14px; /* Pastikan ukuran font sama */
+  line-height: 1.5; /* Pastikan tinggi baris sama */
   outline: none; border: 0;
   background: var(--bg-color); color: var(--text-color);
   white-space: pre-wrap; overflow-wrap: break-word;
