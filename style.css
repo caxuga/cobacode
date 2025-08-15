@@ -61,25 +61,24 @@ main { flex: 1; display: flex; overflow: hidden; }
   width: 48px;
   background: var(--line-num-bg);
   color: var(--line-num-color);
+  text-align: right;
+  user-select: none;
+  font: 14px/1.5 monospace;
   padding: 10px 6px;
-  text-align: right; user-select: none;
-  font-family: monospace; /* Pastikan font sama */
-  font-size: 14px; /* Pastikan ukuran font sama */
-  line-height: 1.5; /* Pastikan tinggi baris sama */
-  overflow: hidden;         /* scroll ikut area kode */
+  overflow: hidden;
 }
 body.light .line-numbers { background: var(--line-num-bg); color: var(--line-num-color); }
 
 /* area kode (contenteditable) */
 .code-area {
   flex: 1;
+  font: 14px/1.5 monospace;
   padding: 10px 12px;
-  font-family: monospace; /* Pastikan font sama */
-  font-size: 14px; /* Pastikan ukuran font sama */
-  line-height: 1.5; /* Pastikan tinggi baris sama */
   outline: none; border: 0;
-  background: var(--bg-color); color: var(--text-color);
-  white-space: pre-wrap; overflow-wrap: break-word;
+  background: var(--bg-color);
+  color: var(--text-color);
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
   overflow: auto;
 }
 
