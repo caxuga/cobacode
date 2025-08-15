@@ -70,3 +70,22 @@ window.onload = () => {
     }
     runCode();
 };
+
+function highlightHTML(content) {
+    // Ubah < > jadi entity
+    content = content.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+    // Highlight tag name, atribut, dan nilai
+    return content.replace(
+        /(&lt;\/?)([a-zA-Z0-9\-]+)([^&]*?)(&gt;)/g,
+        (match, open, tagName, attrs, close) => {
+            // Highlight atribut dan nilai
+            attrs = attrs.replace(
+                /([a-zA-Z-:]+)(="[^"]*")/g,
+                (m, attrName, attrValue) =>
+                    `<span class="attr">${attrName}</span><span class="value">${attrValue}</span>`
+            );
+            return `${open}<span class="tag">${tagName}</span>${attrs}${close}`;
+        }
+    );
+}
