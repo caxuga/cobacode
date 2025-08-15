@@ -1,41 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CobaCode</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CobaCode</title>
+<link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/919/919827.png">
+<style>
+    :root {
+        --bg-color: #1e1e1e;
+        --text-color: #f1f1f1;
+        --header-footer-bg: #222;
+        --tab-bg: #333;
+        --preview-bg: white;
+        --line-num-bg: #2b2b2b;
+        --line-num-color: #999;
+    }
+    body.light {
+        --bg-color: #ffffff;
+        --text-color: #222;
+        --header-footer-bg: #f0f0f0;
+        --tab-bg: #ddd;
+        --preview-bg: #ffffff;
+        --line-num-bg: #eee;
+        --line-num-color: #666;
+    }
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+    }
+    header {
+        background-color: var(--header-footer-bg);
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    header h1 { margin: 0; font-size: 18px; }
+    .header-buttons button {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 6px 12px;
+        cursor: pointer;
+        border-radius: 4px;
+        margin-left: 5px;
+    }
+    main { flex: 1; display: flex; overflow: hidden; }
+    .editor-container {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+    }
+    .tabs { display: flex; background: var(--tab-bg); }
+    .tabs button {
+        flex: 1;
+        padding: 8px;
+        background: var(--tab-bg);
+        color: var(--text-color);
+        border: none;
+        cursor: pointer;
+    }
+    .tabs button.active { background: #4CAF50; color: white; }
+    textarea {
+        flex: 1;
+        padding: 10px;
+        font-family: monospace;
+        font-size: 14px;
+        border: none;
+        outline: none;
+        resize: none;
+        background: var(--bg-color);
+        color: var(--text-color);
+        display: none;
+    }
+    textarea.active { display: block; }
+    iframe { width: 50%; border: none; background: var(--preview-bg); }
+    footer {
+        background: var(--header-footer-bg);
+        color: var(--text-color);
+        text-align: center;
+        padding: 8px;
+        font-size: 14px;
+    }
+    .line-numbers {
+        margin: 0;
+        padding: 10px;
+        width: 40px;
+        background: var(--line-num-bg);
+        color: var(--line-num-color);
+        overflow: hidden;
+        text-align: right;
+        user-select: none;
+        font-family: monospace;
+        font-size: 14px;
+        display: none;
+    }
+    #error-msg {
+        color: #ff4d4d;
+        font-size: 13px;
+        padding: 6px;
+        display: none;
+        background: #330000;
+    }
+    body.light #error-msg {
+        background: #ffe5e5;
+        color: #cc0000;
+    }
+    @media (max-width: 768px) {
+        main { flex-direction: column; }
+        .editor-container, iframe { width: 100%; height: 50%; }
+    }
+</style>
 </head>
 <body>
-    <header>
-        <h1>CobaCode</h1>
-        <div class="header-buttons">
-            <button onclick="toggleTheme()">🌙/☀️</button>
-            <button onclick="runCode()">Run</button>
-            <button onclick="saveAsFile()">Save As</button>
+<header>
+    <h1>CobaCode</h1>
+    <div class="header-buttons">
+        <button onclick="toggleTheme()">🌙/☀️</button>
+        <button onclick="runCode()">Run</button>
+        <button onclick="saveAsFile()">Save As</button>
+    </div>
+</header>
+<main>
+    <div class="editor-container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('html')">HTML</button>
+            <button class="tab-btn" onclick="openTab('css')">CSS</button>
+            <button class="tab-btn" onclick="openTab('js')">JavaScript</button>
         </div>
-    </header>
-    <main>
-        <div class="editor-container">
-            <div class="tabs">
-                <button class="tab-btn active" onclick="openTab('html')">HTML</button>
-                <button class="tab-btn" onclick="openTab('css')">CSS</button>
-                <button class="tab-btn" onclick="openTab('js')">JavaScript</button>
-            </div>
-            <!-- HTML -->
-            <div id="html" class="code-area active" contenteditable="true"></div>
-            <!-- CSS -->
-            <div id="css" class="code-area" contenteditable="true"></div>
-            <!-- JS -->
-            <div id="js" class="code-area" contenteditable="true"></div>
-        </div>
-        <iframe id="preview"></iframe>
-    </main>
 
-    <footer>
-        Dibuat dengan ❤️ oleh Agus Widodo FN.
-    </footer>
+        <pre id="lines-html" class="line-numbers" style="display:block;"></pre>
+        <textarea id="html" class="active"></textarea>
+        <div id="error-msg"></div>
 
-    <script src="script.js"></script>
+        <pre id="lines-css" class="line-numbers"></pre>
+        <textarea id="css"></textarea>
+
+        <pre id="lines-js" class="line-numbers"></pre>
+        <textarea id="js"></textarea>
+    </div>
+    <iframe id="preview"></iframe>
+</main>
+<footer>© 2025 dibuat dengan ❤️ oleh Agus Widodo FN.</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
