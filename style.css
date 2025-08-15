@@ -4,8 +4,6 @@
   --header-footer-bg: #222;
   --tab-bg: #333;
   --preview-bg: #ffffff;
-  --line-num-bg: #2b2b2b;
-  --line-num-color: #999;
 }
 body.light {
   --bg-color: #ffffff;
@@ -13,8 +11,6 @@ body.light {
   --header-footer-bg: #f0f0f0;
   --tab-bg: #ddd;
   --preview-bg: #ffffff;
-  --line-num-bg: #eee;
-  --line-num-color: #666;
 }
 
 /* layout dasar */
@@ -56,18 +52,6 @@ main { flex: 1; display: flex; overflow: hidden; }
   align-items: stretch;
 }
 .editor-wrapper.active { display: flex; }
-
-.line-numbers {
-  width: 48px;
-  background: var(--line-num-bg);
-  color: var(--line-num-color);
-  text-align: right;
-  user-select: none;
-  font: 14px/1.5 monospace;
-  padding: 10px 6px;
-  overflow: hidden;
-}
-body.light .line-numbers { background: var(--line-num-bg); color: var(--line-num-color); }
 
 /* area kode (contenteditable) */
 .code-area {
