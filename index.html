@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CobaCode.</title>
+    <title>CobaCode</title>
     <style>
         body {
             margin: 0;
@@ -24,13 +24,14 @@
             font-size: 18px;
             margin: 0;
         }
-        header button {
+        .header-buttons button {
             background: #4CAF50;
             color: white;
             border: none;
             padding: 6px 12px;
             cursor: pointer;
             border-radius: 4px;
+            margin-left: 5px;
         }
         main {
             flex: 1;
@@ -77,6 +78,16 @@
             border: none;
             background: white;
         }
+        footer {
+            background: #222;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            font-size: 14px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
         @media (max-width: 768px) {
             main {
                 flex-direction: column;
@@ -91,7 +102,10 @@
 <body>
     <header>
         <h1>CobaCode</h1>
-        <button onclick="runCode()">Run</button>
+        <div class="header-buttons">
+            <button onclick="runCode()">Run</button>
+            <button onclick="saveAsFile()">Save As</button>
+        </div>
     </header>
     <main>
         <div class="editor-container">
@@ -107,8 +121,11 @@
         <iframe id="preview"></iframe>
     </main>
 
+    <footer>
+        © 2025 CobaCode by Agus Widodo FN. — Powered by HTML, CSS & JavaScript
+    </footer>
+
     <script>
-        // Buka tab editor
         function openTab(tab) {
             document.querySelectorAll('textarea').forEach(el => el.classList.remove('active'));
             document.getElementById(tab).classList.add('active');
@@ -117,7 +134,6 @@
             event.target.classList.add('active');
         }
 
-        // Jalankan kode ke preview
         function runCode() {
             const html = document.getElementById("html").value;
             const css = `<style>${document.getElementById("css").value}</style>`;
@@ -134,12 +150,42 @@
             localStorage.setItem("jsCode", document.getElementById("js").value);
         }
 
-        // Live update saat mengetik
+        // Tombol Save As
+        function saveAsFile() {
+            const htmlContent = document.getElementById("html").value;
+            const cssContent = document.getElementById("css").value;
+            const jsContent = document.getElementById("js").value;
+
+            const finalCode = `
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+${cssContent}
+</style>
+</head>
+<body>
+${htmlContent}
+<script>
+${jsContent}
+<\/script>
+</body>
+</html>
+`;
+
+            const blob = new Blob([finalCode], { type: "text/html" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "my-code.html";
+            link.click();
+        }
+
+        // Live update
         document.querySelectorAll("textarea").forEach(el => {
             el.addEventListener("input", runCode);
         });
 
-        // Load kode terakhir dari LocalStorage
+        // Load kode terakhir
         window.onload = () => {
             document.getElementById("html").value = localStorage.getItem("htmlCode") || `<h1>Hello World!</h1>\n<p>This is my first HTML page.</p>`;
             document.getElementById("css").value = localStorage.getItem("cssCode") || `body {\n    font-family: Arial, sans-serif;\n    background-color: #f0f0f0;\n    color: #333;\n}\nh1 {\n    color: #4CAF50;\n}`;
