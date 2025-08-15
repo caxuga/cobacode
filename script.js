@@ -130,3 +130,107 @@ window.onload = () => {
     renderHighlight("css");
     renderHighlight("js");
 };
+/* ===== UPDATE: Tambah line number ===== */
+function attachLineNumber(lang) {
+    const codeArea = document.getElementById(lang);
+    const wrapper = document.createElement("div");
+    const gutter = document.createElement("div");
+
+    wrapper.classList.add("editor-wrapper");
+    gutter.classList.add("line-numbers");
+
+    // Bungkus editor
+    codeArea.parentNode.insertBefore(wrapper, codeArea);
+    wrapper.appendChild(gutter);
+    wrapper.appendChild(codeArea);
+
+    // Event update nomor baris
+    codeArea.addEventListener("input", () => updateLineNumbers(codeArea, gutter));
+    codeArea.addEventListener("scroll", () => gutter.scrollTop = codeArea.scrollTop);
+
+    // Set awal
+    updateLineNumbers(codeArea, gutter);
+}
+
+function updateLineNumbers(area, gutter) {
+    const lines = area.innerText.split("\n").length;
+    let lineHTML = "";
+    for (let i = 1; i <= lines; i++) {
+        lineHTML += i + "<br>";
+    }
+    gutter.innerHTML = lineHTML;
+}
+
+/* ===== UPDATE: Cek tag HTML ===== */
+function checkHTMLTags() {
+    const html = document.getElementById("html").innerText;
+    const tagPattern = /<([a-zA-Z0-9]+)(\s[^>]*)?>|<\/([a-zA-Z0-9]+)>/g;
+    let stack = [];
+    let match;
+
+    while ((match = tagPattern.exec(html)) !== null) {
+        if (match[1]) {
+            stack.push(match[1]);
+        } else if (match[3]) {
+            if (stack[stack.length - 1] === match[3]) {
+                stack.pop();
+            } else {
+                showError(`Tag penutup </${match[3]}> tidak sesuai dengan pembuka <${stack[stack.length - 1]}>`);
+                return;
+            }
+        }
+    }
+
+    if (stack.length > 0) {
+        showError(`Tag <${stack[stack.length - 1]}> tidak memiliki penutup </${stack[stack.length - 1]}>`);
+    } else {
+        hideError();
+    }
+}
+
+function showError(msg) {
+    const err = document.getElementById("error-msg");
+    err.innerText = "Error: " + msg;
+    err.style.display = "block";
+}
+
+function hideError() {
+    const err = document.getElementById("error-msg");
+    err.innerText = "";
+    err.style.display = "none";
+}
+
+/* ===== INIT ===== */
+window.onload = () => {
+    // Tambah div error di bawah HTML editor
+    const htmlArea = document.getElementById("html");
+    const errorDiv = document.createElement("div");
+    errorDiv.id = "error-msg";
+    htmlArea.parentNode.appendChild(errorDiv);
+
+    // Pasang line number ke semua editor
+    ["html", "css", "js"].forEach(lang => attachLineNumber(lang));
+
+    // Load kode terakhir
+    document.getElementById("html").innerText = localStorage.getItem("htmlCode") || `<h1>Hello World!</h1>\n<p>This is my first HTML page.</p>`;
+    document.getElementById("css").innerText = localStorage.getItem("cssCode") || `body {\n    font-family: Arial, sans-serif;\n    background-color: #f0f0f0;\n    color: #333;\n}\nh1 {\n    color: #4CAF50;\n}`;
+    document.getElementById("js").innerText = localStorage.getItem("jsCode") || `console.log("Hello from JavaScript!");`;
+
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "light") {
+        document.body.classList.add("light");
+    }
+
+    // Render awal dan cek tag
+    renderHighlight("html");
+    renderHighlight("css");
+    renderHighlight("js");
+    checkHTMLTags();
+};
+
+/* ===== Update cek tag setiap edit HTML ===== */
+document.getElementById("html").addEventListener("input", () => {
+    renderHighlight("html");
+    checkHTMLTags();
+});
+
