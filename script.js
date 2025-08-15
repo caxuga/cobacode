@@ -1,197 +1,174 @@
-/* ------------------ TAB HANDLING (pakai wrapper) ------------------ */
+// ---------------- Tab Handling ----------------
 function openTab(tab) {
-  document.querySelectorAll('.editor-wrapper').forEach(w => w.classList.remove('active'));
-  const target = document.querySelector(`.editor-wrapper[data-lang="${tab}"]`);
-  if (target) target.classList.add('active');
+    document.querySelectorAll('textarea').forEach(el => el.classList.remove('active'));
+    document.getElementById(tab).classList.add('active');
 
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  if (typeof event !== 'undefined') event.target.classList.add('active');
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+
+    document.querySelectorAll('.line-numbers').forEach(el => el.style.display = "none");
+    document.getElementById(`lines-${tab}`).style.display = "block";
+
+    if (tab === "html") checkHTMLTags();
 }
 
-/* ------------------ SYNTAX HIGHLIGHT ------------------ */
-function highlightHTML(content){
-  return content
-    .replace(/</g,"&lt;").replace(/>/g,"&gt;")
-    .replace(/(&lt;\/?)([a-zA-Z0-9\-]+)([^&]*?)(&gt;)/g,(m,o,tag,attrs,c)=>{
-      attrs = attrs.replace(/([a-zA-Z-:]+)(="[^"]*")/g,(mm,name,val)=>
-        `<span class="attr">${name}</span><span class="value">${val}</span>`);
-      return `${o}<span class="tag">${tag}</span>${attrs}${c}`;
-    });
-}
-function highlightCSS(content){
-  return content
-    .replace(/([^{]+)\{/g,'<span class="css-selector">$1</span>{')
-    .replace(/([a-z-]+):/g,'<span class="css-property">$1</span>:')
-    .replace(/:([^;]+);/g,':<span class="css-value">$1</span>;');
-}
-function highlightJS(content){
-  return content
-    .replace(/\b(var|let|const|function|if|else|return|for|while|switch|case|break|true|false|null|undefined|class|new|try|catch|finally|throw)\b/g,'<span class="js-keyword">$1</span>')
-    .replace(/("[^"]*"|'[^']*'|`[^`]*`)/g,'<span class="js-string">$1</span>')
-    .replace(/\b(\d+)\b/g,'<span class="js-number">$1</span>');
+// ---------------- Run & Save ----------------
+function runCode() {
+    const html = document.getElementById("html").value;
+    const css = `<style>${document.getElementById("css").value}</style>`;
+    const js = `<script>${document.getElementById("js").value}<\/script>`;
+
+    const iframeDoc = document.getElementById("preview").contentDocument || document.getElementById("preview").contentWindow.document;
+    iframeDoc.open();
+    iframeDoc.write(html + css + js);
+    iframeDoc.close();
+
+    localStorage.setItem("htmlCode", html);
+    localStorage.setItem("cssCode", document.getElementById("css").value);
+    localStorage.setItem("jsCode", document.getElementById("js").value);
 }
 
-/* ------------------ CARET PRESERVATION ------------------ */
-function isSelectionInside(el){
-  const sel = window.getSelection();
-  if (!sel || sel.rangeCount === 0) return false;
-  let node = sel.anchorNode;
-  while (node){ if (node === el) return true; node = node.parentNode; }
-  return false;
-}
-function getCaretCharacterOffsetWithin(el){
-  if (!isSelectionInside(el)) return el.innerText.length; // kalau caret bukan di el, letakkan di akhir
-  const sel = window.getSelection();
-  const range = sel.getRangeAt(0);
-  const pre = range.cloneRange();
-  pre.selectNodeContents(el);
-  pre.setEnd(range.endContainer, range.endOffset);
-  return pre.toString().length;
-}
-function setCaretPosition(el, offset){
-  const range = document.createRange();
-  const sel = window.getSelection();
-  let cur = 0, found = false;
+function saveAsFile() {
+    const htmlContent = document.getElementById("html").value;
+    const cssContent = document.getElementById("css").value;
+    const jsContent = document.getElementById("js").value;
 
-  function walk(node){
-    if (found) return;
-    if (node.nodeType === Node.TEXT_NODE){
-      const next = cur + node.length;
-      if (offset <= next){
-        range.setStart(node, Math.max(0, offset - cur));
-        range.collapse(true);
-        found = true; return;
-      }
-      cur = next;
-    } else {
-      for (let i=0;i<node.childNodes.length;i++){ walk(node.childNodes[i]); if(found) return; }
-    }
-  }
-  walk(el);
-  if (!found){ range.selectNodeContents(el); range.collapse(false); }
-  sel.removeAllRanges(); sel.addRange(range);
-}
-
-/* ------------------ RENDER HIGHLIGHT ------------------ */
-function renderHighlight(lang){
-  const el = document.getElementById(lang);
-  const text = el.innerText;
-  const caret = getCaretCharacterOffsetWithin(el);
-
-  if (lang==="html") el.innerHTML = highlightHTML(text);
-  else if (lang==="css") el.innerHTML = highlightCSS(text);
-  else if (lang==="js") el.innerHTML = highlightJS(text);
-
-  setCaretPosition(el, Math.min(caret, el.innerText.length));
-
-  runCode();
-  if (lang==="html") checkHTMLTags();
-  updateLineNumbers(lang);
-}
-
-/* ------------------ RUN & SAVE ------------------ */
-function runCode(){
-  const html = document.getElementById("html").innerText;
-  const css  = `<style>${document.getElementById("css").innerText}</style>`;
-  const js   = `<script>${document.getElementById("js").innerText}<\/script>`;
-  const doc = document.getElementById("preview").contentDocument || document.getElementById("preview").contentWindow.document;
-  doc.open(); doc.write(html + css + js); doc.close();
-
-  localStorage.setItem("htmlCode", html);
-  localStorage.setItem("cssCode",  document.getElementById("css").innerText);
-  localStorage.setItem("jsCode",   document.getElementById("js").innerText);
-}
-function saveAsFile(){
-  const html = document.getElementById("html").innerText;
-  const css  = document.getElementById("css").innerText;
-  const js   = document.getElementById("js").innerText;
-  const code = `<!DOCTYPE html>
+    const finalCode = `
+<!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
 <style>
-${css}
+${cssContent}
 </style>
 </head>
 <body>
-${html}
+${htmlContent}
 <script>
-${js}
+${jsContent}
 <\/script>
 </body>
 </html>`;
-  const blob = new Blob([code], {type:"text/html"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "my-code.html";
-  a.click();
+
+    const blob = new Blob([finalCode], { type: "text/html" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "my-code.html";
+    link.click();
 }
 
-/* ------------------ LINE NUMBERS ------------------ */
-function attachLineNumber(lang){
-  const area = document.getElementById(lang);
-  const wrapper = document.createElement("div");
-  const gutter  = document.createElement("div");
-
-  wrapper.className = "editor-wrapper";
-  wrapper.dataset.lang = lang;
-  gutter.className = "line-numbers";
-
-  if (area.classList.contains("active")){
-    wrapper.classList.add("active");
-    area.classList.remove("active");
-  }
-
-  area.parentNode.insertBefore(wrapper, area);
-  wrapper.appendChild(gutter);
-  wrapper.appendChild(area);
-
-  area.addEventListener("scroll", ()=> gutter.scrollTop = area.scrollTop);
-  area.addEventListener("input", ()=> updateLineNumbers(lang));
-  updateLineNumbers(lang);
-}
-function updateLineNumbers(lang){
-  const area = document.getElementById(lang);
-  const gutter = document.querySelector(`.editor-wrapper[data-lang="${lang}"] .line-numbers`);
-  if (!gutter) return;
-  const lines = (area.innerText.match(/\n/g) || []).length + 1;
-  let h = "";
-  for (let i=1;i<=lines;i++) h += i + "<br>";
-  gutter.innerHTML = h;
+// ---------------- Line Numbers ----------------
+function updateLineNumbers(id) {
+    const textarea = document.getElementById(id);
+    const lineNumberElem = document.getElementById(`lines-${id}`);
+    const lines = textarea.value.split("\n").length;
+    lineNumberElem.innerHTML = Array.from({ length: lines }, (_, i) => i + 1).join("\n");
 }
 
-/* ------------------ HTML TAG CHECKER ------------------ */
-const VOID_TAGS = new Set(["area","base","br","col","embed","hr","img","input","link","meta","param","source","track","wbr"]);
-function checkHTMLTags(){
-  const src = document.getElementById("html").innerText;
-  const errors = [];
-  const stack = [];
+["html", "css", "js"].forEach(lang => {
+    const textarea = document.getElementById(lang);
+    textarea.addEventListener("input", () => {
+        runCode();
+        updateLineNumbers(lang);
+        if (lang === "html") checkHTMLTags();
+    });
+    textarea.addEventListener("scroll", () => {
+        document.getElementById(`lines-${lang}`).scrollTop = textarea.scrollTop;
+    });
+});
 
-  // '<' tanpa '>'
-  const lt = (src.match(/</g)||[]).length;
-  const gt = (src.match(/>/g)||[]).length;
-  if (gt < lt) errors.push('Ada tanda "<" yang tidak ditutup ">".');
+// ---------------- Error Checker HTML ----------------
+function checkHTMLTags() {
+    const src = document.getElementById("html").value;
+    const errors = [];
+    const stack = [];
+    const VOID_TAGS = new Set(["area","base","br","col","embed","hr","img","input","link","meta","param","source","track","wbr"]);
 
-  // parse tag
-  const re = /<\/?([a-zA-Z][\w-]*)\b[^>]*>/g;
-  let m;
-  while ((m = re.exec(src)) !== null){
-    const full = m[0];
-    const name = m[1].toLowerCase();
-    const isClose = full.startsWith("</");
-    const selfClose = /\/>$/.test(full) || VOID_TAGS.has(name);
+    // < tanpa >
+    const lt = (src.match(/</g) || []).length;
+    const gt = (src.match(/>/g) || []).length;
+    if (gt < lt) errors.push('Ada tanda "<" yang tidak ditutup ">".');
 
-    if (!isClose){
-      if (!selfClose) stack.push(name);
-    } else {
-      if (stack.length===0){ errors.push(`Tidak ada pembuka untuk </${name}>.`); }
-      else if (stack[stack.length-1] === name){ stack.pop(); }
-      else {
-        const open = stack[stack.length-1];
-        errors.push(`Tag penutup </${name}> tidak sesuai dengan pembuka <${open}>.`);
-        break;
-      }
+    // Parsing tag
+    const re = /<\/?([a-zA-Z][\w-]*)\b[^>]*>/g;
+    let m;
+    while ((m = re.exec(src)) !== null) {
+        const full = m[0];
+        const name = m[1].toLowerCase();
+        const isClose = full.startsWith("</");
+        const selfClose = /\/>$/.test(full) || VOID_TAGS.has(name);
+
+        if (!isClose) {
+            if (!selfClose) stack.push(name);
+        } else {
+            if (stack.length === 0) {
+                errors.push(`Tidak ada pembuka untuk </${name}>.`);
+            } else if (stack[stack.length - 1] === name) {
+                stack.pop();
+            } else {
+                const open = stack[stack.length - 1];
+                errors.push(`Tag penutup </${name}> tidak sesuai dengan pembuka <${open}>.`);
+                break;
+            }
+        }
     }
-  }
-  if (errors.length===0 && stack.length>0){
-    stack.reverse().forEach(n => errors.push(`Tag <${n}> tidak memiliki penutup </${n}>.`
+
+    if (errors.length === 0 && stack.length > 0) {
+        stack.reverse().forEach(n => errors.push(`Tag <${n}> tidak memiliki penutup </${n}>.`));
+    }
+
+    const box = document.getElementById("error-msg");
+    if (errors.length) {
+        box.innerHTML = "Error:<br>• " + errors.join("<br>• ");
+        box.style.display = "block";
+    } else {
+        box.innerHTML = "";
+        box.style.display = "none";
+    }
+}
+
+// ---------------- Theme Toggle ----------------
+function toggleTheme() {
+    document.body.classList.toggle("light");
+    localStorage.setItem("theme", document.body.classList.contains("light") ? "light" : "dark");
+}
+
+// ---------------- Init ----------------
+window.onload = () => {
+    // Tambah line number div
+    ["html", "css", "js"].forEach(lang => {
+        const textarea = document.getElementById(lang);
+        const wrapper = document.createElement("div");
+        const gutter = document.createElement("pre");
+
+        wrapper.style.display = "flex";
+        wrapper.style.height = "100%";
+        gutter.id = `lines-${lang}`;
+        gutter.className = "line-numbers";
+        gutter.style.margin = 0;
+        gutter.style.padding = "10px";
+        gutter.style.width = "40px";
+        gutter.style.background = "#2b2b2b";
+        gutter.style.color = "#999";
+        gutter.style.overflow = "hidden";
+        gutter.style.textAlign = "right";
+        gutter.style.userSelect = "none";
+
+        textarea.parentNode.insertBefore(wrapper, textarea);
+        wrapper.appendChild(gutter);
+        wrapper.appendChild(textarea);
+
+        updateLineNumbers(lang);
+    });
+
+    // Load code terakhir
+    document.getElementById("html").value = localStorage.getItem("htmlCode") || `<h1>Hello World!</h1>\n<p>This is my first HTML page.</p>`;
+    document.getElementById("css").value = localStorage.getItem("cssCode") || `body {\n    font-family: Arial, sans-serif;\n    background-color: #f0f0f0;\n    color: #333;\n}\nh1 {\n    color: #4CAF50;\n}`;
+    document.getElementById("js").value = localStorage.getItem("jsCode") || `console.log("Hello from JavaScript!");`;
+
+    // Theme
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "light") document.body.classList.add("light");
+
+    runCode();
+    checkHTMLTags();
+};
