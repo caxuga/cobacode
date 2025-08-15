@@ -69,19 +69,20 @@ main {
     background: #4CAF50;
     color: white;
 }
-textarea {
+.code-area {
     flex: 1;
     padding: 10px;
     font-family: monospace;
     font-size: 14px;
     border: none;
     outline: none;
-    resize: none;
     background: var(--bg-color);
     color: var(--text-color);
     display: none;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
 }
-textarea.active {
+.code-area.active {
     display: block;
 }
 iframe {
@@ -99,6 +100,18 @@ footer {
     bottom: 0;
     width: 100%;
 }
+
+/* Syntax Highlight Colors */
+.tag { color: #4da6ff; }
+.attr { color: #ff9800; }
+.value { color: #4caf50; }
+.css-selector { color: #ff9800; }
+.css-property { color: #4da6ff; }
+.css-value { color: #4caf50; }
+.js-keyword { color: #ff9800; }
+.js-string { color: #4caf50; }
+.js-number { color: #bdb76b; }
+
 @media (max-width: 768px) {
     main {
         flex-direction: column;
@@ -108,15 +121,3 @@ footer {
         height: 50%;
     }
 }
-
-/* Warna highlight untuk HTML */
-.tag {
-    color: #4da6ff; /* biru untuk nama tag */
-}
-.attr {
-    color: #ff9800; /* oranye untuk atribut */
-}
-.value {
-    color: #4caf50; /* hijau untuk nilai atribut */
-}
-
