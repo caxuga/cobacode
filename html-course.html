@@ -1,0 +1,246 @@
+ <!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buku Digital HTML Dasar</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    /* Sidebar */
+    nav {
+      width: 220px;
+      background: #2c3e50;
+      color: #ecf0f1;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+    nav h2 {
+      font-size: 18px;
+      margin-top: 0;
+      border-bottom: 1px solid #7f8c8d;
+      padding-bottom: 8px;
+    }
+    nav ul {
+      list-style: none;
+      padding: 0;
+    }
+    nav ul li {
+      margin: 10px 0;
+    }
+    nav ul li a {
+      color: #ecf0f1;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    nav ul li a:hover {
+      color: #1abc9c;
+    }
+
+    /* Content */
+    main {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    section {
+      margin-bottom: 40px;
+    }
+    section h2 {
+      margin-top: 0;
+      color: #34495e;
+    }
+    pre {
+      background: #1e1e1e;
+      color: #f1f1f1;
+      padding: 12px;
+      border-radius: 6px;
+      overflow-x: auto;
+    }
+    iframe.preview {
+      width: 100%;
+      height: 150px;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+      border-radius: 4px;
+    }
+    .try-btn {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 6px 12px;
+      background: #4CAF50;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    .try-btn:hover {
+      background: #45a049;
+    }
+
+    /* Nav buttons */
+    .nav-buttons {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .nav-buttons button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #3498db;
+      color: white;
+      font-size: 14px;
+    }
+    .nav-buttons button:hover {
+      background: #2980b9;
+    }
+    .nav-buttons button:disabled {
+      background: #7f8c8d;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <h2>📘 HTML Dasar</h2>
+    <ul>
+      <li><a onclick="showSection(0)">1. Pengenalan</a></li>
+      <li><a onclick="showSection(1)">2. Struktur Dasar</a></li>
+      <li><a onclick="showSection(2)">3. Heading & Paragraf</a></li>
+      <li><a onclick="showSection(3)">4. Teks & Format</a></li>
+      <li><a onclick="showSection(4)">5. Gambar & Link</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <!-- Pengenalan -->
+    <section>
+      <h2>1. Pengenalan HTML</h2>
+      <p><b>HTML (HyperText Markup Language)</b> adalah bahasa standar untuk membuat halaman web. Dengan HTML, kita bisa menentukan struktur, teks, gambar, link, dan elemen-elemen lain di halaman web.</p>
+      <pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Halaman Pertama&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    Halo Dunia!
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+      <iframe class="preview"></iframe>
+      <a class="try-btn" href="index.html" target="_blank">Coba di Editor</a>
+      <div class="nav-buttons">
+        <button disabled>Sebelumnya</button>
+        <button onclick="showSection(1)">Selanjutnya ➡️</button>
+      </div>
+    </section>
+
+    <!-- Struktur Dasar -->
+    <section style="display:none;">
+      <h2>2. Struktur Dasar HTML</h2>
+      <p>Sebuah halaman HTML memiliki struktur utama:</p>
+      <ul>
+        <li><code>&lt;!DOCTYPE html&gt;</code> → deklarasi dokumen HTML5</li>
+        <li><code>&lt;html&gt;</code> → elemen utama</li>
+        <li><code>&lt;head&gt;</code> → informasi halaman (judul, link css, dll)</li>
+        <li><code>&lt;body&gt;</code> → isi halaman</li>
+      </ul>
+      <pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Contoh Struktur&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Judul Halaman&lt;/h1&gt;
+    &lt;p&gt;Ini paragraf pertama.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</pre>
+      <iframe class="preview"></iframe>
+      <a class="try-btn" href="index.html" target="_blank">Coba di Editor</a>
+      <div class="nav-buttons">
+        <button onclick="showSection(0)">⬅️ Sebelumnya</button>
+        <button onclick="showSection(2)">Selanjutnya ➡️</button>
+      </div>
+    </section>
+
+    <!-- Heading -->
+    <section style="display:none;">
+      <h2>3. Heading & Paragraf</h2>
+      <p>HTML menyediakan heading dari <code>&lt;h1&gt;</code> hingga <code>&lt;h6&gt;</code>, dan paragraf dengan <code>&lt;p&gt;</code>.</p>
+      <pre>&lt;h1&gt;Judul Utama&lt;/h1&gt;
+&lt;h2&gt;Sub Judul&lt;/h2&gt;
+&lt;p&gt;Ini adalah sebuah paragraf.&lt;/p&gt;</pre>
+      <iframe class="preview"></iframe>
+      <a class="try-btn" href="index.html" target="_blank">Coba di Editor</a>
+      <div class="nav-buttons">
+        <button onclick="showSection(1)">⬅️ Sebelumnya</button>
+        <button onclick="showSection(3)">Selanjutnya ➡️</button>
+      </div>
+    </section>
+
+    <!-- Text -->
+    <section style="display:none;">
+      <h2>4. Teks & Format Dasar</h2>
+      <p>Kita bisa memberi format teks dengan elemen berikut:</p>
+      <ul>
+        <li><code>&lt;b&gt;</code> → tebal</li>
+        <li><code>&lt;i&gt;</code> → miring</li>
+        <li><code>&lt;u&gt;</code> → garis bawah</li>
+        <li><code>&lt;small&gt;</code> → teks kecil</li>
+      </ul>
+      <pre>&lt;p&gt;Teks &lt;b&gt;tebal&lt;/b&gt;, &lt;i&gt;miring&lt;/i&gt;, dan &lt;u&gt;garis bawah&lt;/u&gt;.&lt;/p&gt;</pre>
+      <iframe class="preview"></iframe>
+      <a class="try-btn" href="index.html" target="_blank">Coba di Editor</a>
+      <div class="nav-buttons">
+        <button onclick="showSection(2)">⬅️ Sebelumnya</button>
+        <button onclick="showSection(4)">Selanjutnya ➡️</button>
+      </div>
+    </section>
+
+    <!-- Media -->
+    <section style="display:none;">
+      <h2>5. Gambar & Link</h2>
+      <p>Gunakan <code>&lt;img&gt;</code> untuk gambar, dan <code>&lt;a&gt;</code> untuk link.</p>
+      <pre>&lt;img src="https://via.placeholder.com/150" alt="Contoh Gambar"&gt;
+&lt;p&gt;Kunjungi &lt;a href="https://www.google.com"&gt;Google&lt;/a&gt;&lt;/p&gt;</pre>
+      <iframe class="preview"></iframe>
+      <a class="try-btn" href="index.html" target="_blank">Coba di Editor</a>
+      <div class="nav-buttons">
+        <button onclick="showSection(3)">⬅️ Sebelumnya</button>
+        <button disabled>Selanjutnya</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function showSection(index) {
+      const sections = document.querySelectorAll("main section");
+      sections.forEach(s => s.style.display = "none");
+      sections[index].style.display = "block";
+      window.scrollTo(0, 0);
+    }
+
+    // Preview otomatis
+    window.onload = () => {
+      document.querySelectorAll("section").forEach(sec => {
+        const pre = sec.querySelector("pre");
+        const iframe = sec.querySelector("iframe");
+        if (pre && iframe) {
+          const code = pre.innerText;
+          const doc = iframe.contentDocument;
+          doc.open();
+          doc.write(code);
+          doc.close();
+        }
+      });
+    };
+  </script>
+</body>
+</html>
