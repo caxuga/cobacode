@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CobaCode</title>
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1006/1006363.png">
-  <!-- PrismJS CSS untuk highlight -->
+  <!-- PrismJS CSS -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
   <style>
     :root {
@@ -119,6 +119,7 @@
       padding: 5px;
       font-size: 13px;
       display: none;
+      white-space: pre-wrap;
     }
   </style>
 </head>
@@ -163,7 +164,7 @@
 
   <!-- PrismJS -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-html.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
 
@@ -176,6 +177,45 @@
       // line numbers
       let lines = code.split("\n").length;
       lineNumbers.innerHTML = Array.from({length: lines}, (_, i) => i+1).join("\n");
+
+      // cek error khusus HTML
+      if (textarea.id === "html") checkHTMLErrors(code);
+    }
+
+    function checkHTMLErrors(code) {
+      const errorBox = document.getElementById("errorBox");
+      let errors = [];
+
+      // Cari tag pembuka & penutup
+      const tagRegex = /<\/?([a-zA-Z0-9]+)(\s[^>]*)?>/g;
+      let stack = [];
+      let match;
+      while ((match = tagRegex.exec(code)) !== null) {
+        let tag = match[1].toLowerCase();
+        if (match[0][1] === "/") {
+          // tag penutup
+          if (stack.length === 0 || stack[stack.length - 1] !== tag) {
+            errors.push(`Tag penutup </${tag}> tidak sesuai.`);
+          } else {
+            stack.pop();
+          }
+        } else {
+          // tag pembuka (skip self-closing)
+          if (!match[0].endsWith("/>")) {
+            stack.push(tag);
+          }
+        }
+      }
+      if (stack.length > 0) {
+        errors.push("Tag yang belum ditutup: " + stack.join(", "));
+      }
+
+      if (errors.length > 0) {
+        errorBox.style.display = "block";
+        errorBox.textContent = "Error:\n- " + errors.join("\n- ");
+      } else {
+        errorBox.style.display = "none";
+      }
     }
 
     function runCode() {
