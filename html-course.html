@@ -1,131 +1,121 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Buku Digital HTML Dasar</title>
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
+    :root{
+      --bg:#ffffff; --text:#2c3e50; --muted:#7f8c8d;
+      --sidebar:#2c3e50; --sidebarText:#ecf0f1; --accent:#1abc9c;
+      --btn:#3498db; --btnHover:#2980b9; --codeBg:#1e1e1e; --codeText:#f1f1f1;
+      --card:#f7f9fb; --border:#e0e6ea;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:Arial, Helvetica, sans-serif; display:flex; height:100vh; overflow:hidden; color:var(--text); background:var(--bg);
     }
     /* Sidebar */
-    nav {
-      width: 220px;
-      background: #2c3e50;
-      color: #ecf0f1;
-      padding: 20px;
-      box-sizing: border-box;
-      overflow-y: auto;
+    nav{
+      width:260px; background:var(--sidebar); color:var(--sidebarText);
+      padding:20px; overflow-y:auto;
     }
-    nav h2 {
-      font-size: 18px;
-      margin-top: 0;
-      border-bottom: 1px solid #7f8c8d;
-      padding-bottom: 8px;
+    nav h2{margin:0 0 10px; font-size:18px;}
+    nav p{margin:0 0 16px; color:#cfd8dc; font-size:13px}
+    nav input{
+      width:100%; padding:8px 10px; border:none; border-radius:6px; margin-bottom:12px;
     }
-    nav ul {
-      list-style: none;
-      padding: 0;
+    nav ul{list-style:none; padding:0; margin:0}
+    nav li{margin:6px 0}
+    nav a{
+      display:block; padding:8px 10px; border-radius:6px; text-decoration:none;
+      color:var(--sidebarText); font-size:14px; transition:.15s;
     }
-    nav ul li {
-      margin: 10px 0;
-    }
-    nav ul li a {
-      color: #ecf0f1;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    nav ul li a:hover {
-      color: #1abc9c;
-    }
+    nav a:hover{background:rgba(255,255,255,.12)}
+    nav a.active{background:#1f2d3a}
 
     /* Content */
-    main {
-      flex: 1;
-      padding: 20px;
-      overflow-y: auto;
+    main{flex:1; display:flex; flex-direction:column; overflow:hidden}
+    header.top{
+      padding:10px 16px; border-bottom:1px solid var(--border); background:var(--card);
+      display:flex; align-items:center; gap:10px; justify-content:space-between;
     }
-    section {
-      margin-bottom: 40px;
+    header.top .title{font-weight:700}
+    header.top .ctrls{display:flex; gap:8px; align-items:center}
+    .ctrls button,.ctrls a{
+      border:none; background:var(--btn); color:white; padding:8px 12px; border-radius:6px; cursor:pointer; font-size:13px; text-decoration:none
     }
-    section h2 {
-      margin-top: 0;
-      color: #34495e;
+    .ctrls button:hover,.ctrls a:hover{background:var(--btnHover)}
+    .container{flex:1; display:flex; overflow:auto}
+    section{
+      flex:1; padding:22px; max-width:980px; margin:0 auto; display:none;
     }
-    pre {
-      background: #1e1e1e;
-      color: #f1f1f1;
-      padding: 12px;
-      border-radius: 6px;
-      overflow-x: auto;
+    section.active{display:block}
+    section h2{margin:0 0 10px; color:#34495e}
+    section .lead{color:var(--muted)}
+    .card{
+      background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:14px; margin:14px 0;
     }
-    iframe.preview {
-      width: 100%;
-      height: 150px;
-      border: 1px solid #ccc;
-      margin-top: 10px;
-      border-radius: 4px;
+    pre{
+      background:var(--codeBg); color:var(--codeText); padding:12px; border-radius:8px; overflow-x:auto; margin:8px 0 0;
     }
-    .try-btn {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 6px 12px;
-      background: #4CAF50;
-      color: white;
-      text-decoration: none;
-      border-radius: 4px;
-      font-size: 14px;
+    .preview{
+      width:100%; height:170px; border:1px solid var(--border); border-radius:8px; margin-top:10px; background:#fff;
     }
-    .try-btn:hover {
-      background: #45a049;
+    .try{
+      display:inline-block; margin-top:10px; padding:6px 12px; background:var(--accent); color:#073b3a; text-decoration:none; border-radius:6px; font-weight:700; font-size:13px;
     }
-
-    /* Nav buttons */
-    .nav-buttons {
-      margin-top: 20px;
-      display: flex;
-      justify-content: space-between;
+    .grid-2{display:grid; grid-template-columns:1fr; gap:14px}
+    @media(min-width:900px){.grid-2{grid-template-columns:1fr 1fr}}
+    .nav-buttons{display:flex; justify-content:space-between; gap:10px; margin-top:18px}
+    .nav-buttons button{background:var(--btn); color:#fff; border:none; padding:8px 12px; border-radius:6px; cursor:pointer}
+    .nav-buttons button[disabled]{background:#95a5a6; cursor:not-allowed}
+    footer{
+      border-top:1px solid var(--border); padding:8px 16px; font-size:12px; color:var(--muted); background:var(--card); text-align:center
     }
-    .nav-buttons button {
-      padding: 6px 12px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      background: #3498db;
-      color: white;
-      font-size: 14px;
-    }
-    .nav-buttons button:hover {
-      background: #2980b9;
-    }
-    .nav-buttons button:disabled {
-      background: #7f8c8d;
-      cursor: not-allowed;
-    }
+    .badge{display:inline-block; font-size:11px; padding:3px 8px; background:#eef7f5; color:#0b6b62; border:1px solid #cdeee7; border-radius:999px; margin-left:8px}
   </style>
 </head>
 <body>
   <nav>
     <h2>📘 HTML Dasar</h2>
-    <ul>
-      <li><a onclick="showSection(0)">1. Pengenalan</a></li>
-      <li><a onclick="showSection(1)">2. Struktur Dasar</a></li>
-      <li><a onclick="showSection(2)">3. Heading & Paragraf</a></li>
-      <li><a onclick="showSection(3)">4. Teks & Format</a></li>
-      <li><a onclick="showSection(4)">5. Gambar & Link</a></li>
+    <p>Daftar isi & cepat cari bab.</p>
+    <input id="filter" placeholder="Cari bab… (mis. tabel, form)"/>
+    <ul id="toc">
+      <li><a data-i="0" class="active">1. Pengenalan</a></li>
+      <li><a data-i="1">2. Struktur Dasar</a></li>
+      <li><a data-i="2">3. Heading & Paragraf</a></li>
+      <li><a data-i="3">4. Teks & Format</a></li>
+      <li><a data-i="4">5. Gambar & Link</a></li>
+      <li><a data-i="5">6. List (Daftar)</a></li>
+      <li><a data-i="6">7. Tabel</a></li>
+      <li><a data-i="7">8. Formulir</a></li>
+      <li><a data-i="8">9. Multimedia</a></li>
+      <li><a data-i="9">10. Semantic HTML</a></li>
+      <li><a data-i="10">11. Layout Dasar</a></li>
+      <li><a data-i="11">12. Meta & SEO Dasar</a></li>
+      <li><a data-i="12">Latihan Akhir</a></li>
+      <li><a data-i="13">Ringkasan</a></li>
     </ul>
   </nav>
 
   <main>
-    <!-- Pengenalan -->
-    <section>
-      <h2>1. Pengenalan HTML</h2>
-      <p><b>HTML (HyperText Markup Language)</b> adalah bahasa standar untuk membuat halaman web. Dengan HTML, kita bisa menentukan struktur, teks, gambar, link, dan elemen-elemen lain di halaman web.</p>
-      <pre>&lt;!DOCTYPE html&gt;
+    <header class="top">
+      <div class="title">Buku Digital HTML Dasar <span class="badge">v1.0</span></div>
+      <div class="ctrls">
+        <a href="index.html" target="_blank">Buka Editor</a>
+      </div>
+    </header>
+
+    <div class="container">
+      <!-- 0. Pengenalan -->
+      <section class="active">
+        <h2>1. Pengenalan HTML</h2>
+        <p class="lead">HTML adalah bahasa markah untuk menyusun struktur halaman web. Ia bekerja bersama CSS (untuk tampilan) dan JavaScript (untuk interaksi).</p>
+        <div class="grid-2">
+          <div class="card">
+            <b>Struktur sederhana:</b>
+            <pre>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
     &lt;title&gt;Halaman Pertama&lt;/title&gt;
@@ -134,113 +124,433 @@
     Halo Dunia!
   &lt;/body&gt;
 &lt;/html&gt;</pre>
-      <iframe class="preview"></iframe>
-      <a class="try-btn" href="index.html" target="_blank">Coba di Editor</a>
-      <div class="nav-buttons">
-        <button disabled>Sebelumnya</button>
-        <button onclick="showSection(1)">Selanjutnya ➡️</button>
-      </div>
-    </section>
+            <a class="try" href="index.html" target="_blank">Coba di Editor</a>
+          </div>
+          <iframe class="preview"></iframe>
+        </div>
+        <div class="nav-buttons">
+          <button disabled>Sebelumnya</button>
+          <button onclick="show(1)">Selanjutnya ➡️</button>
+        </div>
+      </section>
 
-    <!-- Struktur Dasar -->
-    <section style="display:none;">
-      <h2>2. Struktur Dasar HTML</h2>
-      <p>Sebuah halaman HTML memiliki struktur utama:</p>
-      <ul>
-        <li><code>&lt;!DOCTYPE html&gt;</code> → deklarasi dokumen HTML5</li>
-        <li><code>&lt;html&gt;</code> → elemen utama</li>
-        <li><code>&lt;head&gt;</code> → informasi halaman (judul, link css, dll)</li>
-        <li><code>&lt;body&gt;</code> → isi halaman</li>
-      </ul>
-      <pre>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
+      <!-- 1. Struktur Dasar -->
+      <section>
+        <h2>2. Struktur Dasar HTML</h2>
+        <p class="lead">Bagian utama: <code>&lt;head&gt;</code> (informasi halaman) dan <code>&lt;body&gt;</code> (isi yang terlihat).</p>
+        <div class="grid-2">
+          <div class="card">
+            <b>Contoh:</b>
+            <pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="id"&gt;
   &lt;head&gt;
-    &lt;title&gt;Contoh Struktur&lt;/title&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;title&gt;Struktur&lt;/title&gt;
   &lt;/head&gt;
   &lt;body&gt;
     &lt;h1&gt;Judul Halaman&lt;/h1&gt;
-    &lt;p&gt;Ini paragraf pertama.&lt;/p&gt;
+    &lt;p&gt;Ini isi halaman.&lt;/p&gt;
   &lt;/body&gt;
 &lt;/html&gt;</pre>
-      <iframe class="preview"></iframe>
-      <a class="try-btn" href="index.html" target="_blank">Coba di Editor</a>
-      <div class="nav-buttons">
-        <button onclick="showSection(0)">⬅️ Sebelumnya</button>
-        <button onclick="showSection(2)">Selanjutnya ➡️</button>
-      </div>
-    </section>
+            <a class="try" href="index.html" target="_blank">Coba di Editor</a>
+          </div>
+          <iframe class="preview"></iframe>
+        </div>
+        <div class="nav-buttons">
+          <button onclick="show(0)">⬅️ Sebelumnya</button>
+          <button onclick="show(2)">Selanjutnya ➡️</button>
+        </div>
+      </section>
 
-    <!-- Heading -->
-    <section style="display:none;">
-      <h2>3. Heading & Paragraf</h2>
-      <p>HTML menyediakan heading dari <code>&lt;h1&gt;</code> hingga <code>&lt;h6&gt;</code>, dan paragraf dengan <code>&lt;p&gt;</code>.</p>
-      <pre>&lt;h1&gt;Judul Utama&lt;/h1&gt;
-&lt;h2&gt;Sub Judul&lt;/h2&gt;
-&lt;p&gt;Ini adalah sebuah paragraf.&lt;/p&gt;</pre>
-      <iframe class="preview"></iframe>
-      <a class="try-btn" href="index.html" target="_blank">Coba di Editor</a>
-      <div class="nav-buttons">
-        <button onclick="showSection(1)">⬅️ Sebelumnya</button>
-        <button onclick="showSection(3)">Selanjutnya ➡️</button>
-      </div>
-    </section>
+      <!-- 2. Heading & Paragraf -->
+      <section>
+        <h2>3. Heading & Paragraf</h2>
+        <p class="lead">Gunakan heading berurutan (H1–H6) untuk hierarki judul, dan <code>&lt;p&gt;</code> untuk paragraf.</p>
+        <div class="grid-2">
+          <div class="card">
+            <b>Contoh:</b>
+            <pre>&lt;h1&gt;Judul Utama (H1)&lt;/h1&gt;
+&lt;h2&gt;Subjudul (H2)&lt;/h2&gt;
+&lt;p&gt;Ini paragraf pertama.&lt;/p&gt;
+&lt;p&gt;Ini paragraf kedua.&lt;/p&gt;</pre>
+            <a class="try" href="index.html" target="_blank">Coba di Editor</a>
+          </div>
+          <iframe class="preview"></iframe>
+        </div>
+        <div class="nav-buttons">
+          <button onclick="show(1)">⬅️ Sebelumnya</button>
+          <button onclick="show(3)">Selanjutnya ➡️</button>
+        </div>
+      </section>
 
-    <!-- Text -->
-    <section style="display:none;">
-      <h2>4. Teks & Format Dasar</h2>
-      <p>Kita bisa memberi format teks dengan elemen berikut:</p>
-      <ul>
-        <li><code>&lt;b&gt;</code> → tebal</li>
-        <li><code>&lt;i&gt;</code> → miring</li>
-        <li><code>&lt;u&gt;</code> → garis bawah</li>
-        <li><code>&lt;small&gt;</code> → teks kecil</li>
-      </ul>
-      <pre>&lt;p&gt;Teks &lt;b&gt;tebal&lt;/b&gt;, &lt;i&gt;miring&lt;/i&gt;, dan &lt;u&gt;garis bawah&lt;/u&gt;.&lt;/p&gt;</pre>
-      <iframe class="preview"></iframe>
-      <a class="try-btn" href="index.html" target="_blank">Coba di Editor</a>
-      <div class="nav-buttons">
-        <button onclick="showSection(2)">⬅️ Sebelumnya</button>
-        <button onclick="showSection(4)">Selanjutnya ➡️</button>
-      </div>
-    </section>
+      <!-- 3. Teks & Format -->
+      <section>
+        <h2>4. Teks & Format</h2>
+        <p class="lead">Beberapa elemen inline: <code>&lt;b&gt;</code>, <code>&lt;i&gt;</code>, <code>&lt;u&gt;</code>, <code>&lt;small&gt;</code>, <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>.</p>
+        <div class="grid-2">
+          <div class="card">
+            <b>Contoh:</b>
+            <pre>&lt;p&gt;Teks &lt;b&gt;tebal&lt;/b&gt;, &lt;i&gt;miring&lt;/i&gt;,
+&lt;u&gt;garis bawah&lt;/u&gt;, &lt;small&gt;kecil&lt;/small&gt;,
+&lt;strong&gt;penting&lt;/strong&gt;, &lt;em&gt;penekanan&lt;/em&gt;.&lt;/p&gt;</pre>
+            <a class="try" href="index.html" target="_blank">Coba di Editor</a>
+          </div>
+          <iframe class="preview"></iframe>
+        </div>
+        <div class="nav-buttons">
+          <button onclick="show(2)">⬅️ Sebelumnya</button>
+          <button onclick="show(4)">Selanjutnya ➡️</button>
+        </div>
+      </section>
 
-    <!-- Media -->
-    <section style="display:none;">
-      <h2>5. Gambar & Link</h2>
-      <p>Gunakan <code>&lt;img&gt;</code> untuk gambar, dan <code>&lt;a&gt;</code> untuk link.</p>
-      <pre>&lt;img src="https://via.placeholder.com/150" alt="Contoh Gambar"&gt;
-&lt;p&gt;Kunjungi &lt;a href="https://www.google.com"&gt;Google&lt;/a&gt;&lt;/p&gt;</pre>
-      <iframe class="preview"></iframe>
-      <a class="try-btn" href="index.html" target="_blank">Coba di Editor</a>
-      <div class="nav-buttons">
-        <button onclick="showSection(3)">⬅️ Sebelumnya</button>
-        <button disabled>Selanjutnya</button>
-      </div>
-    </section>
+      <!-- 4. Gambar & Link -->
+      <section>
+        <h2>5. Gambar & Link</h2>
+        <p class="lead">Gambar memakai <code>&lt;img&gt;</code> (void element, tidak punya tag penutup). Link memakai <code>&lt;a&gt;</code>.</p>
+        <div class="grid-2">
+          <div class="card">
+            <b>Contoh:</b>
+            <pre>&lt;img src="https://via.placeholder.com/150" alt="Contoh"&gt;
+&lt;p&gt;Kunjungi &lt;a href="https://www.google.com" target="_blank"&gt;Google&lt;/a&gt;&lt;/p&gt;</pre>
+            <a class="try" href="index.html" target="_blank">Coba di Editor</a>
+          </div>
+          <iframe class="preview"></iframe>
+        </div>
+        <div class="nav-buttons">
+          <button onclick="show(3)">⬅️ Sebelumnya</button>
+          <button onclick="show(5)">Selanjutnya ➡️</button>
+        </div>
+      </section>
+
+      <!-- 5. List -->
+      <section>
+        <h2>6. List (Daftar)</h2>
+        <p class="lead">Gunakan <code>&lt;ul&gt;</code> untuk bullet, <code>&lt;ol&gt;</code> untuk nomor. Item daftar pakai <code>&lt;li&gt;</code>.</p>
+        <div class="grid-2">
+          <div class="card">
+            <b>Contoh:</b>
+            <pre>&lt;h3&gt;Daftar Belanja (UL)&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Beras&lt;/li&gt;
+  &lt;li&gt;Gula&lt;/li&gt;
+  &lt;li&gt;Telur&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3&gt;Langkah Memasak (OL)&lt;/h3&gt;
+&lt;ol&gt;
+  &lt;li&gt;Siapkan bahan&lt;/li&gt;
+  &lt;li&gt;Cuci bersih&lt;/li&gt;
+  &lt;li&gt;Masak hingga matang&lt;/li&gt;
+&lt;/ol&gt;</pre>
+            <a class="try" href="index.html" target="_blank">Coba di Editor</a>
+          </div>
+          <iframe class="preview"></iframe>
+        </div>
+        <div class="nav-buttons">
+          <button onclick="show(4)">⬅️ Sebelumnya</button>
+          <button onclick="show(6)">Selanjutnya ➡️</button>
+        </div>
+      </section>
+
+      <!-- 6. Tabel -->
+      <section>
+        <h2>7. Tabel</h2>
+        <p class="lead">Tabel memakai kombinasi <code>&lt;table&gt;</code>, <code>&lt;tr&gt;</code>, <code>&lt;th&gt;</code>, <code>&lt;td&gt;</code>.</p>
+        <div class="grid-2">
+          <div class="card">
+            <b>Contoh:</b>
+            <pre>&lt;table border="1" cellpadding="6"&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Nama&lt;/th&gt;
+    &lt;th&gt;Kelas&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Agus&lt;/td&gt;
+    &lt;td&gt;XI RPL&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Sinta&lt;/td&gt;
+    &lt;td&gt;XI DKV&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;</pre>
+            <a class="try" href="index.html" target="_blank">Coba di Editor</a>
+          </div>
+          <iframe class="preview"></iframe>
+        </div>
+        <div class="nav-buttons">
+          <button onclick="show(5)">⬅️ Sebelumnya</button>
+          <button onclick="show(7)">Selanjutnya ➡️</button>
+        </div>
+      </section>
+
+      <!-- 7. Formulir -->
+      <section>
+        <h2>8. Formulir</h2>
+        <p class="lead">Form mengumpulkan input pengguna. Gunakan label untuk aksesibilitas.</p>
+        <div class="grid-2">
+          <div class="card">
+            <b>Contoh:</b>
+            <pre>&lt;form action="#" method="post"&gt;
+  &lt;label for="nama"&gt;Nama:&lt;/label&gt;
+  &lt;input id="nama" name="nama" type="text" placeholder="Nama lengkap"&gt;
+
+  &lt;br&gt;&lt;br&gt;
+  &lt;label for="kelas"&gt;Kelas:&lt;/label&gt;
+  &lt;select id="kelas" name="kelas"&gt;
+    &lt;option&gt;X&lt;/option&gt;
+    &lt;option&gt;XI&lt;/option&gt;
+    &lt;option&gt;XII&lt;/option&gt;
+  &lt;/select&gt;
+
+  &lt;br&gt;&lt;br&gt;
+  &lt;label&gt;&lt;input type="checkbox"&gt; Setuju aturan&lt;/label&gt;
+
+  &lt;br&gt;&lt;br&gt;
+  &lt;button type="submit"&gt;Kirim&lt;/button&gt;
+&lt;/form&gt;</pre>
+            <a class="try" href="index.html" target="_blank">Coba di Editor</a>
+          </div>
+          <iframe class="preview"></iframe>
+        </div>
+        <div class="nav-buttons">
+          <button onclick="show(6)">⬅️ Sebelumnya</button>
+          <button onclick="show(8)">Selanjutnya ➡️</button>
+        </div>
+      </section>
+
+      <!-- 8. Multimedia -->
+      <section>
+        <h2>9. Multimedia</h2>
+        <p class="lead">Sematkan audio/video dengan kontrol.</p>
+        <div class="grid-2">
+          <div class="card">
+            <b>Contoh:</b>
+            <pre>&lt;h3&gt;Audio&lt;/h3&gt;
+&lt;audio controls&gt;
+  &lt;source src="https://www.w3schools.com/html/horse.mp3" type="audio/mpeg"&gt;
+  Browser tidak mendukung audio.
+&lt;/audio&gt;
+
+&lt;h3&gt;Video&lt;/h3&gt;
+&lt;video width="320" controls&gt;
+  &lt;source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4"&gt;
+  Browser tidak mendukung video.
+&lt;/video&gt;</pre>
+            <a class="try" href="index.html" target="_blank">Coba di Editor</a>
+          </div>
+          <iframe class="preview"></iframe>
+        </div>
+        <div class="nav-buttons">
+          <button onclick="show(7)">⬅️ Sebelumnya</button>
+          <button onclick="show(9)">Selanjutnya ➡️</button>
+        </div>
+      </section>
+
+      <!-- 9. Semantic HTML -->
+      <section>
+        <h2>10. Semantic HTML</h2>
+        <p class="lead">Elemen semantik memberi makna: <code>&lt;header&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;section&gt;</code>, <code>&lt;article&gt;</code>, <code>&lt;aside&gt;</code>, <code>&lt;footer&gt;</code>.</p>
+        <div class="grid-2">
+          <div class="card">
+            <b>Contoh:</b>
+            <pre>&lt;header&gt;Logo &amp; Judul&lt;/header&gt;
+&lt;nav&gt;Menu&lt;/nav&gt;
+&lt;main&gt;
+  &lt;article&gt;
+    &lt;h2&gt;Berita&lt;/h2&gt;
+    &lt;p&gt;Isi artikel...&lt;/p&gt;
+  &lt;/article&gt;
+  &lt;aside&gt;Sidebar&lt;/aside&gt;
+&lt;/main&gt;
+&lt;footer&gt;Hak cipta&lt;/footer&gt;</pre>
+            <a class="try" href="index.html" target="_blank">Coba di Editor</a>
+          </div>
+          <iframe class="preview"></iframe>
+        </div>
+        <div class="nav-buttons">
+          <button onclick="show(8)">⬅️ Sebelumnya</button>
+          <button onclick="show(10)">Selanjutnya ➡️</button>
+        </div>
+      </section>
+
+      <!-- 10. Layout Dasar -->
+      <section>
+        <h2>11. Layout Dasar</h2>
+        <p class="lead">Struktur grid sederhana (tanpa CSS eksternal, hanya contoh struktur HTML).</p>
+        <div class="grid-2">
+          <div class="card">
+            <b>Contoh:</b>
+            <pre>&lt;header&gt;Header&lt;/header&gt;
+&lt;nav&gt;Navigasi&lt;/nav&gt;
+&lt;section&gt;
+  &lt;h2&gt;Konten Utama&lt;/h2&gt;
+  &lt;p&gt;Paragraf konten.&lt;/p&gt;
+&lt;/section&gt;
+&lt;aside&gt;Sidebar&lt;/aside&gt;
+&lt;footer&gt;Footer&lt;/footer&gt;</pre>
+            <a class="try" href="index.html" target="_blank">Coba di Editor</a>
+          </div>
+          <iframe class="preview"></iframe>
+        </div>
+        <div class="nav-buttons">
+          <button onclick="show(9)">⬅️ Sebelumnya</button>
+          <button onclick="show(11)">Selanjutnya ➡️</button>
+        </div>
+      </section>
+
+      <!-- 11. Meta & SEO Dasar -->
+      <section>
+        <h2>12. Meta & SEO Dasar</h2>
+        <p class="lead">Tambahkan meta tag untuk deskripsi dan viewport; judul unik di setiap halaman.</p>
+        <div class="grid-2">
+          <div class="card">
+            <b>Contoh:</b>
+            <pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="id"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+  &lt;meta name="description" content="Belajar HTML dasar untuk pemula"&gt;
+  &lt;title&gt;Belajar HTML Dasar&lt;/title&gt;
+  &lt;link rel="icon" href="favicon.png"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;Halo!&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+            <a class="try" href="index.html" target="_blank">Coba di Editor</a>
+          </div>
+          <iframe class="preview"></iframe>
+        </div>
+        <div class="nav-buttons">
+          <button onclick="show(10)">⬅️ Sebelumnya</button>
+          <button onclick="show(12)">Selanjutnya ➡️</button>
+        </div>
+      </section>
+
+      <!-- 12. Latihan Akhir -->
+      <section>
+        <h2>Latihan Akhir: Profil Sederhana</h2>
+        <p class="lead">Buat halaman profil dengan heading, paragraf, gambar, list, tabel kecil, dan form kontak.</p>
+        <div class="card">
+          <b>Template latihan (silakan modifikasi):</b>
+          <pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="id"&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;title&gt;Profil Saya&lt;/title&gt;
+  &lt;link rel="icon" href="favicon.png"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;header&gt;&lt;h1&gt;Nama Lengkap&lt;/h1&gt;&lt;/header&gt;
+
+  &lt;section&gt;
+    &lt;h2&gt;Tentang Saya&lt;/h2&gt;
+    &lt;img src="https://via.placeholder.com/120" alt="Foto profil"&gt;
+    &lt;p&gt;Deskripsi singkat...&lt;/p&gt;
+  &lt;/section&gt;
+
+  &lt;section&gt;
+    &lt;h2&gt;Keahlian&lt;/h2&gt;
+    &lt;ul&gt;
+      &lt;li&gt;HTML&lt;/li&gt;
+      &lt;li&gt;CSS&lt;/li&gt;
+      &lt;li&gt;JavaScript&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/section&gt;
+
+  &lt;section&gt;
+    &lt;h2&gt;Riwayat Pendidikan&lt;/h2&gt;
+    &lt;table border="1" cellpadding="6"&gt;
+      &lt;tr&gt;&lt;th&gt;Sekolah&lt;/th&gt;&lt;th&gt;Tahun&lt;/th&gt;&lt;/tr&gt;
+      &lt;tr&gt;&lt;td&gt;SMAINK&lt;/td&gt;&lt;td&gt;2023-2025&lt;/td&gt;&lt;/tr&gt;
+    &lt;/table&gt;
+  &lt;/section&gt;
+
+  &lt;section&gt;
+    &lt;h2&gt;Kontak&lt;/h2&gt;
+    &lt;form&gt;
+      &lt;label&gt;Email: &lt;input type="email" placeholder="email@contoh.com"&gt;&lt;/label&gt;&lt;br&gt;&lt;br&gt;
+      &lt;label&gt;Pesan:&lt;/label&gt;&lt;br&gt;
+      &lt;textarea rows="4" cols="40"&gt;&lt;/textarea&gt;&lt;br&gt;&lt;br&gt;
+      &lt;button type="submit"&gt;Kirim&lt;/button&gt;
+    &lt;/form&gt;
+  &lt;/section&gt;
+
+  &lt;footer&gt;© 2025 Nama Kamu&lt;/footer&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+          <a class="try" href="index.html" target="_blank">Kerjakan di Editor</a>
+        </div>
+        <iframe class="preview"></iframe>
+        <div class="nav-buttons">
+          <button onclick="show(11)">⬅️ Sebelumnya</button>
+          <button onclick="show(13)">Selanjutnya ➡️</button>
+        </div>
+      </section>
+
+      <!-- 13. Ringkasan -->
+      <section>
+        <h2>Ringkasan</h2>
+        <p class="lead">Kamu sudah mempelajari pondasi HTML: struktur, elemen umum, list, tabel, form, multimedia, semantic HTML, dan meta dasar.</p>
+        <div class="card">
+          ✅ Tips cepat:
+          <ul>
+            <li>Gunakan struktur yang rapi & heading berurutan.</li>
+            <li>Tambahkan <code>alt</code> pada gambar & <code>label</code> untuk input.</li>
+            <li>Hindari tag tidak ditutup (ingat void elements tak perlu penutup).</li>
+            <li>Selalu beri <code>&lt;title&gt;</code> dan meta viewport.</li>
+          </ul>
+        </div>
+        <div class="nav-buttons">
+          <button onclick="show(12)">⬅️ Sebelumnya</button>
+          <button disabled>Selesai</button>
+        </div>
+      </section>
+    </div>
+
+    <footer>© 2025 Buku Digital HTML — dibuat untuk SMAINK oleh Agus Widodo FN</footer>
   </main>
 
   <script>
-    function showSection(index) {
-      const sections = document.querySelectorAll("main section");
-      sections.forEach(s => s.style.display = "none");
-      sections[index].style.display = "block";
-      window.scrollTo(0, 0);
+    // ganti section aktif
+    function show(i){
+      const secs=[...document.querySelectorAll('section')];
+      secs.forEach(s=>s.classList.remove('active'));
+      secs[i].classList.add('active');
+      // update sidebar active
+      document.querySelectorAll('#toc a').forEach(a=>a.classList.remove('active'));
+      const link=document.querySelector(`#toc a[data-i="${i}"]`);
+      if(link) link.classList.add('active');
+      window.scrollTo(0,0);
     }
 
-    // Preview otomatis
-    window.onload = () => {
-      document.querySelectorAll("section").forEach(sec => {
-        const pre = sec.querySelector("pre");
-        const iframe = sec.querySelector("iframe");
-        if (pre && iframe) {
-          const code = pre.innerText;
-          const doc = iframe.contentDocument;
-          doc.open();
-          doc.write(code);
-          doc.close();
+    // sidebar click
+    document.querySelectorAll('#toc a').forEach(a=>{
+      a.addEventListener('click',()=>show(parseInt(a.dataset.i,10)));
+    });
+
+    // filter toc
+    document.getElementById('filter').addEventListener('input', e=>{
+      const q=e.target.value.toLowerCase();
+      document.querySelectorAll('#toc li').forEach(li=>{
+        const txt=li.innerText.toLowerCase();
+        li.style.display = txt.includes(q)? 'block':'none';
+      });
+    });
+
+    // render semua preview sekali saat load
+    function renderPreviews(){
+      document.querySelectorAll('section').forEach(sec=>{
+        const pre=sec.querySelector('pre');
+        const frame=sec.querySelector('iframe.preview');
+        if(pre && frame){
+          const doc=frame.contentDocument;
+          doc.open(); doc.write(pre.innerText); doc.close();
         }
       });
-    };
+    }
+    window.onload = renderPreviews;
   </script>
 </body>
-</html>
+</html>
