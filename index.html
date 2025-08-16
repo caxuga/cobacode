@@ -143,18 +143,6 @@
         lineNumbers: true,   // ✅ HTML pakai line number
         value: localStorage.getItem("htmlCode") || "<html>\n<body>\n<h1>Hello Murid SMAINK!</h1>\n<p>Ini adalah contoh halaman HTML.</p>\n</body>\n</html>"
       });
-	  
-// Refresh editor setelah tab dibuka
-function openTab(tab) {
-  currentTab = tab;
-  document.querySelectorAll(".editor").forEach(ed => ed.style.display = "none");
-  document.getElementById("editor-" + tab).style.display = "block";
-  document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-  event.target.classList.add("active");
-
-  // ⬇️ Refresh CodeMirror agar bisa diketik
-  editors[tab].refresh();
-}
 
       editors.css = CodeMirror(document.getElementById("editor-css"), {
         mode: "css",
@@ -171,12 +159,17 @@ function openTab(tab) {
       });
     }
 
-    function openTab(tab) {
-      currentTab = tab;
-      document.querySelectorAll(".editor").forEach(ed => ed.style.display = "none");
-      document.getElementById("editor-" + tab).style.display = "block";
-      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-      event.target.classList.add("active");
+// Refresh editor setelah tab dibuka
+	function openTab(tab) {
+	  currentTab = tab;
+	  document.querySelectorAll(".editor").forEach(ed => ed.style.display = "none");
+	  document.getElementById("editor-" + tab).style.display = "block";
+	  document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+	  event.target.classList.add("active");
+
+ // 🔧 Refresh biar editor aktif saat tab dibuka
+      editors[tab].refresh();
+      editors[tab].focus();
     }
 
     function runCode() {
