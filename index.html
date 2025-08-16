@@ -8,98 +8,30 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/theme/material-darker.min.css">
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    header {
-      background: #222;
-      color: #fff;
-      padding: 8px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    header h1 { font-size: 16px; margin: 0; }
-    .header-buttons button {
-      margin-left: 6px;
-      padding: 5px 12px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      background: #4CAF50;
-      color: white;
-    }
-    main {
-      flex: 1;
-      display: flex;
-      overflow: hidden;
-    }
-    .editor-container {
-      width: 50%;
-      display: flex;
-      flex-direction: column;
-    }
-    .tabs {
-      display: flex;
-      background: #333;
-    }
-    .tabs button {
-      flex: 1;
-      padding: 6px;
-      border: none;
-      background: #333;
-      color: #fff;
-      cursor: pointer;
-    }
-    .tabs button.active { background: #4CAF50; }
-    .editor { flex: 1; display: none; }
-    .editor.active { display: block; }
-    .CodeMirror { height: 100%; }
-    /* Browser-style preview */
-    .preview-container {
-      width: 50%;
-      display: flex;
-      flex-direction: column;
-      border-left: 1px solid #444;
-    }
-    .browser-header {
-      background: #f5f5f5;
-      border-bottom: 1px solid #ccc;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 8px;
-      font-size: 13px;
-    }
-    .browser-header img { width: 16px; height: 16px; }
-    #preview-url {
-      flex: 1;
-      font-size: 13px;
-      border: 1px solid #ccc;
-      border-radius: 3px;
-      padding: 2px 6px;
-      background: #fff;
-      color: #555;
-    }
-    #preview { flex: 1; border: none; background: #fff; }
-    #errorBox {
-      background: #f44336;
-      color: #fff;
-      padding: 4px 8px;
-      display: none;
-      font-size: 13px;
-    }
-    footer {
-      background: #222;
-      color: #fff;
-      text-align: center;
-      font-size: 13px;
-      padding: 6px;
-    }
+    body { margin:0; font-family:Arial, sans-serif; height:100vh; display:flex; flex-direction:column; }
+    header { background:#222; color:#fff; padding:8px 16px; display:flex; justify-content:space-between; align-items:center; }
+    header h1 { font-size:16px; margin:0; }
+    .header-buttons button { margin-left:6px; padding:5px 12px; border:none; border-radius:4px; cursor:pointer; background:#4CAF50; color:white; }
+    main { flex:1; display:flex; overflow:hidden; }
+    .editor-container { width:50%; display:flex; flex-direction:column; }
+    .tabs { display:flex; background:#333; }
+    .tabs button { flex:1; padding:6px; border:none; background:#333; color:#fff; cursor:pointer; }
+    .tabs button.active { background:#4CAF50; }
+    .editor { flex:1; display:none; }
+    .editor.active { display:block; }
+    .CodeMirror { height:100%; }
+    .preview-container { width:50%; display:flex; flex-direction:column; border-left:1px solid #444; }
+    .browser-tabs { display:flex; background:#ddd; border-bottom:1px solid #aaa; }
+    .browser-tab { padding:4px 10px; border-right:1px solid #aaa; cursor:pointer; background:#ccc; font-size:13px; }
+    .browser-tab.active { background:#fff; font-weight:bold; }
+    .browser-tab.add { background:#4CAF50; color:white; }
+    .browser-header { background:#f5f5f5; border-bottom:1px solid #ccc; display:flex; align-items:center; gap:6px; padding:4px 8px; font-size:13px; }
+    .browser-header img { width:16px; height:16px; }
+    .browser-url { flex:1; font-size:13px; border:1px solid #ccc; border-radius:3px; padding:2px 6px; background:#fff; color:#555; }
+    .preview-frame { flex:1; border:none; display:none; }
+    .preview-frame.active { display:block; }
+    #errorBox { background:#f44336; color:#fff; padding:4px 8px; display:none; font-size:13px; }
+    footer { background:#222; color:#fff; text-align:center; font-size:13px; padding:6px; }
   </style>
 </head>
 <body>
@@ -125,12 +57,16 @@
     </div>
 
     <div class="preview-container">
+      <div class="browser-tabs" id="browserTabs">
+        <div class="browser-tab active" onclick="switchPreview(0)">Tab 1</div>
+        <div class="browser-tab add" onclick="addPreviewTab()">+</div>
+      </div>
       <div class="browser-header">
         <img id="preview-favicon" src="favicon.png" alt="icon">
         <span id="preview-title">Preview Page</span>
-        <input id="preview-url" type="text" value="https://smaink-coding.com/" readonly>
+        <input class="browser-url" id="preview-url" type="text" value="https://smaink-coding.com/" readonly>
       </div>
-      <iframe id="preview"></iframe>
+      <iframe class="preview-frame active"></iframe>
     </div>
   </main>
 
@@ -147,22 +83,19 @@
 
   <script>
     let editors = {};
+    let previewFrames = [];
 
     function initEditors() {
       editors.html = CodeMirror(document.getElementById("editor-html"), {
-        mode: "text/html",   // ✅ lebih fleksibel
+        mode: "text/html",
         theme: "material-darker",
         lineNumbers: true
       });
       editors.css = CodeMirror(document.getElementById("editor-css"), {
-        mode: "css",
-        theme: "material-darker",
-        lineNumbers: false
+        mode: "css", theme: "material-darker", lineNumbers: false
       });
       editors.js = CodeMirror(document.getElementById("editor-js"), {
-        mode: "javascript",
-        theme: "material-darker",
-        lineNumbers: false
+        mode: "javascript", theme: "material-darker", lineNumbers: false
       });
 
       // default content
@@ -179,18 +112,11 @@
 </body>
 </html>`);
       editors.css.setValue(localStorage.getItem("cssCode") || 
-`body {
-  font-family: Arial, sans-serif;
-  background: #f0f0f0;
-  color: #333;
-}
-h1 { color: #4CAF50; } `);
-      editors.js.setValue(localStorage.getItem("jsCode") || 
-`console.log("Hello from JavaScript!");`);
+`body { font-family: Arial, sans-serif; background: #f0f0f0; color: #333; }
+h1 { color: #4CAF50; }`);
+      editors.js.setValue(localStorage.getItem("jsCode") || `console.log("Hello from JavaScript!");`);
 
-      Object.values(editors).forEach(ed => {
-        ed.on("change", runCode);
-      });
+      Object.values(editors).forEach(ed => ed.on("change", runCode));
     }
 
     function openTab(tab) {
@@ -206,12 +132,10 @@ h1 { color: #4CAF50; } `);
       const cssContent = editors.css.getValue();
       const jsContent = editors.js.getValue();
 
-      // Title
       const titleMatch = htmlContent.match(/<title>(.*?)<\/title>/i);
       const pageTitle = titleMatch ? titleMatch[1] : "Preview Page";
       document.getElementById("preview-title").innerText = pageTitle;
 
-      // Favicon
       const faviconMatch = htmlContent.match(/<link[^>]+rel=["']icon["'][^>]*>/i);
       let faviconUrl = "favicon.png";
       if (faviconMatch) {
@@ -220,10 +144,8 @@ h1 { color: #4CAF50; } `);
       }
       document.getElementById("preview-favicon").src = faviconUrl;
 
-      // URL palsu
       document.getElementById("preview-url").value = "https://smaink-coding.com/";
 
-      // Final document
       const finalDoc = `
 <!DOCTYPE html>
 <html lang="en">
@@ -238,12 +160,11 @@ ${htmlContent}
 <script>${jsContent}<\/script>
 </body>
 </html>`;
-      const iframeDoc = document.getElementById("preview").contentDocument;
-      iframeDoc.open();
-      iframeDoc.write(finalDoc);
-      iframeDoc.close();
 
-      // Save
+      // render di tab aktif
+      const activeFrame = document.querySelector(".preview-frame.active").contentDocument;
+      activeFrame.open(); activeFrame.write(finalDoc); activeFrame.close();
+
       localStorage.setItem("htmlCode", htmlContent);
       localStorage.setItem("cssCode", cssContent);
       localStorage.setItem("jsCode", jsContent);
@@ -251,7 +172,35 @@ ${htmlContent}
       checkErrors(htmlContent);
     }
 
-    // Error checking
+    function addPreviewTab() {
+      const newIndex = previewFrames.length + 1;
+      const newTab = document.createElement("div");
+      newTab.className = "browser-tab";
+      newTab.innerText = "Tab " + newIndex;
+      newTab.onclick = () => switchPreview(newIndex - 1);
+
+      document.getElementById("browserTabs").insertBefore(newTab, document.querySelector(".browser-tab.add"));
+
+      const newFrame = document.createElement("iframe");
+      newFrame.className = "preview-frame";
+      document.querySelector(".preview-container").appendChild(newFrame);
+      previewFrames.push(newFrame);
+
+      switchPreview(newIndex - 1);
+      runCode();
+    }
+
+    function switchPreview(index) {
+      document.querySelectorAll(".browser-tab").forEach(tab => tab.classList.remove("active"));
+      document.querySelectorAll(".preview-frame").forEach(frame => frame.classList.remove("active"));
+
+      const tabs = document.querySelectorAll(".browser-tab");
+      tabs[index].classList.add("active");
+
+      const frames = document.querySelectorAll(".preview-frame");
+      frames[index].classList.add("active");
+    }
+
     function checkErrors(html) {
       const errorBox = document.getElementById("errorBox");
       errorBox.style.display = "none";
@@ -306,7 +255,8 @@ ${htmlContent}
 
     window.onload = () => {
       initEditors();
-      openTab("html"); // ✅ aktifkan HTML dari awal → hilang bug putih
+      previewFrames = [document.querySelector(".preview-frame")];
+      openTab("html");
       runCode();
     };
   </script>
