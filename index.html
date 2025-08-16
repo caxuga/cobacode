@@ -4,28 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CobaCode</title>
-  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1006/1006363.png">
-  <!-- PrismJS CSS -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- CodeMirror CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/theme/material-darker.min.css">
+
   <style>
-    :root {
-      --bg-color: #1e1e1e;
-      --text-color: #f1f1f1;
-      --header-footer-bg: #222;
-      --tab-bg: #333;
-      --preview-bg: #fff;
-    }
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      height: 100vh;
       display: flex;
       flex-direction: column;
-      background: var(--bg-color);
-      color: var(--text-color);
+      height: 100vh;
+      background: #1e1e1e;
+      color: #fff;
     }
     header {
-      background: var(--header-footer-bg);
+      background: #222;
       padding: 10px 20px;
       display: flex;
       justify-content: space-between;
@@ -34,92 +30,62 @@
     header h1 { font-size: 18px; margin: 0; }
     .header-buttons button {
       background: #4CAF50;
+      border: none;
       color: white;
-      border: none;
       padding: 6px 12px;
-      margin-left: 5px;
-      cursor: pointer;
       border-radius: 4px;
+      cursor: pointer;
+      margin-left: 5px;
     }
-    main { flex: 1; display: flex; overflow: hidden; }
-    .editor-container { width: 50%; display: flex; flex-direction: column; }
-    .tabs { display: flex; background: var(--tab-bg); }
-    .tabs button {
-      flex: 1; padding: 8px;
-      background: var(--tab-bg);
-      border: none; cursor: pointer;
-      color: var(--text-color);
-    }
-    .tabs button.active { background: #4CAF50; color: #fff; }
-    .editor-wrapper {
-      position: relative;
+    main {
       flex: 1;
-      background: var(--bg-color);
+      display: flex;
       overflow: hidden;
     }
-    textarea.code-input {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      width: 100%; height: 100%;
-      background: transparent;
-      color: transparent;
-      caret-color: var(--text-color);
-      font-family: monospace;
-      font-size: 14px;
-      line-height: 1.5em;
+    .editor-container {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+    }
+    .tabs {
+      display: flex;
+      background: #333;
+    }
+    .tabs button {
+      flex: 1;
+      padding: 8px;
+      background: #333;
+      color: #fff;
       border: none;
-      outline: none;
-      resize: none;
-      padding: 10px 0 10px 40px;
-      z-index: 2;
-      white-space: pre;
-      overflow: auto;
+      cursor: pointer;
     }
-    .code-content {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      padding: 10px 0 10px 40px;
-      font-family: monospace;
-      font-size: 14px;
-      line-height: 1.5em;
-      white-space: pre;
-      pointer-events: none;
-      overflow: hidden;
-      color: var(--text-color);
-      z-index: 1;
+    .tabs button.active {
+      background: #4CAF50;
+      color: white;
     }
-    .line-numbers {
-      position: absolute;
-      top: 0; left: 0; bottom: 0;
-      width: 35px;
-      background: #2a2a2a;
-      text-align: right;
-      padding: 10px 5px;
+    .CodeMirror {
+      flex: 1;
+      height: 100%;
       font-size: 14px;
-      line-height: 1.5em;
-      color: #888;
-      user-select: none;
-      z-index: 3;
     }
     iframe#preview {
       width: 50%;
-      height: 100%;
       border: none;
-      background: var(--preview-bg);
+      background: white;
     }
     footer {
-      background: var(--header-footer-bg);
-      padding: 6px;
+      background: #222;
+      color: #aaa;
       text-align: center;
+      padding: 8px;
       font-size: 14px;
     }
     .error-box {
-      background: #a00;
+      background: #b71c1c;
       color: #fff;
       padding: 5px;
       font-size: 13px;
       display: none;
-      white-space: pre-wrap;
     }
   </style>
 </head>
@@ -127,11 +93,11 @@
   <header>
     <h1>CobaCode</h1>
     <div class="header-buttons">
-      <button onclick="toggleTheme()">🌙/☀️</button>
       <button onclick="runCode()">Run</button>
       <button onclick="saveAsFile()">Save As</button>
     </div>
   </header>
+
   <main>
     <div class="editor-container">
       <div class="tabs">
@@ -139,112 +105,100 @@
         <button class="tab-btn" onclick="openTab('css')">CSS</button>
         <button class="tab-btn" onclick="openTab('js')">JavaScript</button>
       </div>
-      <div class="editor-wrapper">
-        <div class="line-numbers"></div>
-        <pre class="code-content language-html"></pre>
-        <textarea id="html" class="code-input" spellcheck="false"></textarea>
-      </div>
-      <div class="editor-wrapper" style="display:none;">
-        <div class="line-numbers"></div>
-        <pre class="code-content language-css"></pre>
-        <textarea id="css" class="code-input" spellcheck="false"></textarea>
-      </div>
-      <div class="editor-wrapper" style="display:none;">
-        <div class="line-numbers"></div>
-        <pre class="code-content language-js"></pre>
-        <textarea id="js" class="code-input" spellcheck="false"></textarea>
-      </div>
-      <div class="error-box" id="errorBox"></div>
+      <div id="editor-html" class="editor"></div>
+      <div id="editor-css" class="editor" style="display:none"></div>
+      <div id="editor-js" class="editor" style="display:none"></div>
+      <div id="errorBox" class="error-box"></div>
     </div>
     <iframe id="preview"></iframe>
   </main>
+
   <footer>
     © 2025 dibuat dengan ❤️ oleh Agus Widodo FN.
   </footer>
 
-  <!-- PrismJS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+  <!-- CodeMirror JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/xml/xml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/css/css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/htmlmixed/htmlmixed.min.js"></script>
 
   <script>
-    function updateHighlight(textarea, overlay, lineNumbers) {
-      let code = textarea.value;
-      let lang = textarea.id === "html" ? "markup" : textarea.id;
-      overlay.innerHTML = Prism.highlight(code, Prism.languages[lang], lang);
+    let editors = {};
+    let currentTab = "html";
 
-      // line numbers
-      let lines = code.split("\n").length;
-      lineNumbers.innerHTML = Array.from({length: lines}, (_, i) => i+1).join("\n");
+    // Init editors
+    function initEditors() {
+      editors.html = CodeMirror(document.getElementById("editor-html"), {
+        mode: "htmlmixed",
+        theme: "material-darker",
+        lineNumbers: true,
+        value: localStorage.getItem("htmlCode") || "<h1>Hello World!</h1>\n<p>This is my first HTML page.</p>"
+      });
 
-      // cek error khusus HTML
-      if (textarea.id === "html") checkHTMLErrors(code);
+      editors.css = CodeMirror(document.getElementById("editor-css"), {
+        mode: "css",
+        theme: "material-darker",
+        lineNumbers: true,
+        value: localStorage.getItem("cssCode") || "body {\n  font-family: Arial;\n  background: #f0f0f0;\n}\nh1 { color: green; }"
+      });
+
+      editors.js = CodeMirror(document.getElementById("editor-js"), {
+        mode: "javascript",
+        theme: "material-darker",
+        lineNumbers: true,
+        value: localStorage.getItem("jsCode") || "console.log('Hello from JavaScript!');"
+      });
     }
 
-    function checkHTMLErrors(code) {
-      const errorBox = document.getElementById("errorBox");
-      let errors = [];
-
-      // Cari tag pembuka & penutup
-      const tagRegex = /<\/?([a-zA-Z0-9]+)(\s[^>]*)?>/g;
-      let stack = [];
-      let match;
-      while ((match = tagRegex.exec(code)) !== null) {
-        let tag = match[1].toLowerCase();
-        if (match[0][1] === "/") {
-          // tag penutup
-          if (stack.length === 0 || stack[stack.length - 1] !== tag) {
-            errors.push(`Tag penutup </${tag}> tidak sesuai.`);
-          } else {
-            stack.pop();
-          }
-        } else {
-          // tag pembuka (skip self-closing)
-          if (!match[0].endsWith("/>")) {
-            stack.push(tag);
-          }
-        }
-      }
-      if (stack.length > 0) {
-        errors.push("Tag yang belum ditutup: " + stack.join(", "));
-      }
-
-      if (errors.length > 0) {
-        errorBox.style.display = "block";
-        errorBox.textContent = "Error:\n- " + errors.join("\n- ");
-      } else {
-        errorBox.style.display = "none";
-      }
+    function openTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll(".editor").forEach(ed => ed.style.display = "none");
+      document.getElementById("editor-" + tab).style.display = "block";
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      event.target.classList.add("active");
     }
 
     function runCode() {
-      const html = document.getElementById("html").value;
-      const css = `<style>${document.getElementById("css").value}</style>`;
-      const js = `<script>${document.getElementById("js").value}<\/script>`;
+      const html = editors.html.getValue();
+      const css = `<style>${editors.css.getValue()}</style>`;
+      const js = `<script>${editors.js.getValue()}<\/script>`;
 
       const iframeDoc = document.getElementById("preview").contentDocument;
       iframeDoc.open();
       iframeDoc.write(html + css + js);
       iframeDoc.close();
 
-      localStorage.setItem("htmlCode", html);
-      localStorage.setItem("cssCode", document.getElementById("css").value);
-      localStorage.setItem("jsCode", document.getElementById("js").value);
+      // Save
+      localStorage.setItem("htmlCode", editors.html.getValue());
+      localStorage.setItem("cssCode", editors.css.getValue());
+      localStorage.setItem("jsCode", editors.js.getValue());
+
+      // Simple error check (tag mismatch)
+      checkErrors(html);
     }
 
     function saveAsFile() {
-      const htmlContent = document.getElementById("html").value;
-      const cssContent = document.getElementById("css").value;
-      const jsContent = document.getElementById("js").value;
+      const htmlContent = editors.html.getValue();
+      const cssContent = editors.css.getValue();
+      const jsContent = editors.js.getValue();
 
-      const finalCode = `<!DOCTYPE html>
+      const finalCode = `
+<!DOCTYPE html>
 <html>
-<head><style>${cssContent}</style></head>
+<head>
+<style>
+${cssContent}
+</style>
+</head>
 <body>
 ${htmlContent}
-<script>${jsContent}<\/script>
-</body></html>`;
+<script>
+${jsContent}
+<\/script>
+</body>
+</html>`;
 
       const blob = new Blob([finalCode], { type: "text/html" });
       const link = document.createElement("a");
@@ -253,38 +207,33 @@ ${htmlContent}
       link.click();
     }
 
-    function toggleTheme() {
-      document.body.classList.toggle("light");
-    }
-
-    function openTab(tab) {
-      document.querySelectorAll(".editor-wrapper").forEach((el, idx) => {
-        el.style.display = ["html","css","js"][idx] === tab ? "block" : "none";
-      });
-      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-      event.target.classList.add("active");
+    // Basic tag error checker
+    function checkErrors(html) {
+      const errorBox = document.getElementById("errorBox");
+      errorBox.style.display = "none";
+      const openTags = [];
+      const regex = /<\/?([a-zA-Z0-9]+)(\s[^>]*)?>/g;
+      let match;
+      while ((match = regex.exec(html)) !== null) {
+        if (match[0][1] === "/") {
+          if (openTags.length === 0 || openTags[openTags.length - 1] !== match[1]) {
+            errorBox.innerText = `Error: Tag penutup </${match[1]}> tidak sesuai.`;
+            errorBox.style.display = "block";
+            return;
+          }
+          openTags.pop();
+        } else {
+          openTags.push(match[1]);
+        }
+      }
+      if (openTags.length > 0) {
+        errorBox.innerText = `Error: Tag <${openTags[openTags.length-1]}> belum ditutup.`;
+        errorBox.style.display = "block";
+      }
     }
 
     window.onload = () => {
-      document.getElementById("html").value = localStorage.getItem("htmlCode") || `<h1>Hello World!</h1>\n<p>This is my first HTML page.</p>`;
-      document.getElementById("css").value = localStorage.getItem("cssCode") || `body {\n  font-family: Arial;\n  background:#f0f0f0;\n  color:#333;\n}\nh1{color:green;}`;
-      document.getElementById("js").value = localStorage.getItem("jsCode") || `console.log("Hello from JavaScript!");`;
-
-      document.querySelectorAll(".editor-wrapper").forEach(wrapper => {
-        const textarea = wrapper.querySelector("textarea");
-        const overlay = wrapper.querySelector(".code-content");
-        const lineNumbers = wrapper.querySelector(".line-numbers");
-        updateHighlight(textarea, overlay, lineNumbers);
-
-        textarea.addEventListener("input", () => {
-          updateHighlight(textarea, overlay, lineNumbers);
-        });
-        textarea.addEventListener("scroll", () => {
-          overlay.scrollTop = textarea.scrollTop;
-          lineNumbers.scrollTop = textarea.scrollTop;
-        });
-      });
-
+      initEditors();
       runCode();
     };
   </script>
