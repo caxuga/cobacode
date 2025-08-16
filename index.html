@@ -69,10 +69,7 @@
       font-size: 14px;
       line-height: 1.4em;
     }
-    /* Fix line number overlap */
-    .CodeMirror-lines {
-      padding: 0 0 0 4px;
-    }
+    /* Gutter styling (untuk HTML editor) */
     .CodeMirror-gutters {
       background: #2b2b2b;
       color: #888;
@@ -143,21 +140,21 @@
       editors.html = CodeMirror(document.getElementById("editor-html"), {
         mode: "htmlmixed",
         theme: "material-darker",
-        lineNumbers: true,
-        value: localStorage.getItem("htmlCode") || "<h1>Hello World!</h1>\n<p>This is my first HTML page.</p>"
+        lineNumbers: true,   // ✅ HTML pakai line number
+        value: localStorage.getItem("htmlCode") || "<html>\n<body>\n<h1>Hello Murid SMAINK!</h1>\n<p>Ini adalah contoh halaman HTML.</p>\n</body>\n</html>"
       });
 
       editors.css = CodeMirror(document.getElementById("editor-css"), {
         mode: "css",
         theme: "material-darker",
-        lineNumbers: true,
+        lineNumbers: false,  // ❌ CSS tanpa line number
         value: localStorage.getItem("cssCode") || "body {\n  font-family: Arial;\n  background: #f0f0f0;\n}\nh1 { color: green; }"
       });
 
       editors.js = CodeMirror(document.getElementById("editor-js"), {
         mode: "javascript",
         theme: "material-darker",
-        lineNumbers: true,
+        lineNumbers: false,  // ❌ JS tanpa line number
         value: localStorage.getItem("jsCode") || "console.log('Hello from JavaScript!');"
       });
     }
@@ -180,12 +177,12 @@
       iframeDoc.write(html + css + js);
       iframeDoc.close();
 
-      // Save
+      // Save ke localStorage
       localStorage.setItem("htmlCode", editors.html.getValue());
       localStorage.setItem("cssCode", editors.css.getValue());
       localStorage.setItem("jsCode", editors.js.getValue());
 
-      // Simple error check (tag mismatch)
+      // Cek error di HTML
       checkErrors(html);
     }
 
