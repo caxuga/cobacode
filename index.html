@@ -157,6 +157,10 @@
         lineNumbers: false,  // ❌ JS tanpa line number
         value: localStorage.getItem("jsCode") || "console.log('Hello from JavaScript!');"
       });
+// 🔄 Auto-run setiap kali ada perubahan
+		Object.values(editors).forEach(ed => {
+		ed.on("change", () => runCode());
+    });
     }
 
 // Refresh editor setelah tab dibuka
