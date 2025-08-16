@@ -4,38 +4,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CobaCode</title>
-  <link rel="icon" type="image/png" href="favicon.png">
-
   <!-- CodeMirror CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/theme/material-darker.min.css">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/theme/material-darker.min.css">
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      background: #1e1e1e;
-      color: #fff;
     }
     header {
       background: #222;
-      padding: 10px 20px;
+      color: #fff;
+      padding: 8px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    header h1 { font-size: 18px; margin: 0; }
+    header h1 { font-size: 16px; margin: 0; }
     .header-buttons button {
-      background: #4CAF50;
+      margin-left: 6px;
+      padding: 5px 12px;
       border: none;
-      color: white;
-      padding: 6px 12px;
       border-radius: 4px;
       cursor: pointer;
-      margin-left: 5px;
+      background: #4CAF50;
+      color: white;
     }
     main {
       flex: 1;
@@ -53,46 +49,56 @@
     }
     .tabs button {
       flex: 1;
-      padding: 8px;
+      padding: 6px;
+      border: none;
       background: #333;
       color: #fff;
-      border: none;
       cursor: pointer;
     }
-    .tabs button.active {
-      background: #4CAF50;
-      color: white;
-    }
-    .CodeMirror {
-      flex: 1;
-      height: 100%;
-      font-size: 14px;
-      line-height: 1.4em;
-    }
-    /* Gutter styling (untuk HTML editor) */
-    .CodeMirror-gutters {
-      background: #2b2b2b;
-      color: #888;
-      border-right: 1px solid #444;
-    }
-    iframe#preview {
+    .tabs button.active { background: #4CAF50; }
+    .editor { flex: 1; display: none; }
+    .editor.active { display: block; }
+    .CodeMirror { height: 100%; }
+    /* Browser-style preview */
+    .preview-container {
       width: 50%;
-      border: none;
-      background: white;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid #444;
+    }
+    .browser-header {
+      background: #f5f5f5;
+      border-bottom: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      font-size: 13px;
+    }
+    .browser-header img { width: 16px; height: 16px; }
+    #preview-url {
+      flex: 1;
+      font-size: 13px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      padding: 2px 6px;
+      background: #fff;
+      color: #555;
+    }
+    #preview { flex: 1; border: none; background: #fff; }
+    #errorBox {
+      background: #f44336;
+      color: #fff;
+      padding: 4px 8px;
+      display: none;
+      font-size: 13px;
     }
     footer {
       background: #222;
-      color: #aaa;
-      text-align: center;
-      padding: 8px;
-      font-size: 14px;
-    }
-    .error-box {
-      background: #b71c1c;
       color: #fff;
-      padding: 5px;
+      text-align: center;
       font-size: 13px;
-      display: none;
+      padding: 6px;
     }
   </style>
 </head>
@@ -112,12 +118,20 @@
         <button class="tab-btn" onclick="openTab('css')">CSS</button>
         <button class="tab-btn" onclick="openTab('js')">JavaScript</button>
       </div>
-      <div id="editor-html" class="editor"></div>
-      <div id="editor-css" class="editor" style="display:none"></div>
-      <div id="editor-js" class="editor" style="display:none"></div>
-      <div id="errorBox" class="error-box"></div>
+      <div id="editor-html" class="editor active"></div>
+      <div id="editor-css" class="editor"></div>
+      <div id="editor-js" class="editor"></div>
+      <div id="errorBox"></div>
     </div>
-    <iframe id="preview"></iframe>
+
+    <div class="preview-container">
+      <div class="browser-header">
+        <img id="preview-favicon" src="favicon.png" alt="icon">
+        <span id="preview-title">Preview Page</span>
+        <input id="preview-url" type="text" value="https://preview.local/" readonly>
+      </div>
+      <iframe id="preview"></iframe>
+    </div>
   </main>
 
   <footer>
@@ -125,121 +139,141 @@
   </footer>
 
   <!-- CodeMirror JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/xml/xml.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/css/css.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/javascript/javascript.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/htmlmixed/htmlmixed.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/css/css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/xml/xml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/htmlmixed/htmlmixed.min.js"></script>
 
   <script>
     let editors = {};
-    let currentTab = "html";
 
-    // Init editors
     function initEditors() {
       editors.html = CodeMirror(document.getElementById("editor-html"), {
-        mode: "htmlmixed",
+        mode: "text/html",   // ✅ lebih fleksibel
         theme: "material-darker",
-        lineNumbers: true,   // ✅ HTML pakai line number
-        value: localStorage.getItem("htmlCode") || "<html>\n<body>\n<h1>Hello Murid SMAINK!</h1>\n<p>Ini adalah contoh halaman HTML.</p>\n</body>\n</html>"
+        lineNumbers: true
       });
-
       editors.css = CodeMirror(document.getElementById("editor-css"), {
         mode: "css",
         theme: "material-darker",
-        lineNumbers: false,  // ❌ CSS tanpa line number
-        value: localStorage.getItem("cssCode") || "body {\n  font-family: Arial;\n  background: #f0f0f0;\n}\nh1 { color: green; }"
+        lineNumbers: false
       });
-
       editors.js = CodeMirror(document.getElementById("editor-js"), {
         mode: "javascript",
         theme: "material-darker",
-        lineNumbers: false,  // ❌ JS tanpa line number
-        value: localStorage.getItem("jsCode") || "console.log('Hello from JavaScript!');"
+        lineNumbers: false
       });
-// 🔄 Auto-run setiap kali ada perubahan
-		Object.values(editors).forEach(ed => {
-		ed.on("change", () => runCode());
-    });
+
+      // default content
+      editors.html.setValue(localStorage.getItem("htmlCode") || 
+`<!DOCTYPE html>
+<html>
+<head>
+  <title>Preview Page</title>
+  <link rel="icon" href="favicon.png">
+</head>
+<body>
+  <h1>Hello World!</h1>
+  <p>This is my first HTML page.</p>
+</body>
+</html>`);
+      editors.css.setValue(localStorage.getItem("cssCode") || 
+`body {
+  font-family: Arial, sans-serif;
+  background: #f0f0f0;
+  color: #333;
+}
+h1 { color: #4CAF50; } `);
+      editors.js.setValue(localStorage.getItem("jsCode") || 
+`console.log("Hello from JavaScript!");`);
+
+      Object.values(editors).forEach(ed => {
+        ed.on("change", runCode);
+      });
     }
 
-// Refresh editor setelah tab dibuka
-	function openTab(tab) {
-	  currentTab = tab;
-	  document.querySelectorAll(".editor").forEach(ed => ed.style.display = "none");
-	  document.getElementById("editor-" + tab).style.display = "block";
-	  document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
-	  event.target.classList.add("active");
-
- // 🔧 Refresh biar editor aktif saat tab dibuka
+    function openTab(tab) {
+      document.querySelectorAll('.editor').forEach(el => el.classList.remove('active'));
+      document.getElementById("editor-" + tab).classList.add('active');
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
       editors[tab].refresh();
-      editors[tab].focus();
     }
 
     function runCode() {
-      const html = editors.html.getValue();
-      const css = `<style>${editors.css.getValue()}</style>`;
-      const js = `<script>${editors.js.getValue()}<\/script>`;
-
-      const iframeDoc = document.getElementById("preview").contentDocument;
-      iframeDoc.open();
-      iframeDoc.write(html + css + js);
-      iframeDoc.close();
-
-      // Save ke localStorage
-      localStorage.setItem("htmlCode", editors.html.getValue());
-      localStorage.setItem("cssCode", editors.css.getValue());
-      localStorage.setItem("jsCode", editors.js.getValue());
-
-      // Cek error di HTML
-      checkErrors(html);
-    }
-
-    function saveAsFile() {
       const htmlContent = editors.html.getValue();
       const cssContent = editors.css.getValue();
       const jsContent = editors.js.getValue();
 
-      const finalCode = `
+      // Title
+      const titleMatch = htmlContent.match(/<title>(.*?)<\/title>/i);
+      const pageTitle = titleMatch ? titleMatch[1] : "Preview Page";
+      document.getElementById("preview-title").innerText = pageTitle;
+
+      // Favicon
+      const faviconMatch = htmlContent.match(/<link[^>]+rel=["']icon["'][^>]*>/i);
+      let faviconUrl = "favicon.png";
+      if (faviconMatch) {
+        const hrefMatch = faviconMatch[0].match(/href=["']([^"']+)["']/i);
+        if (hrefMatch) faviconUrl = hrefMatch[1];
+      }
+      document.getElementById("preview-favicon").src = faviconUrl;
+
+      // URL palsu
+      document.getElementById("preview-url").value = "https://preview.local/";
+
+      // Final document
+      const finalDoc = `
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<style>
-${cssContent}
-</style>
+<meta charset="UTF-8">
+<title>${pageTitle}</title>
+<link rel="icon" href="${faviconUrl}">
+<style>${cssContent}</style>
 </head>
 <body>
 ${htmlContent}
-<script>
-${jsContent}
-<\/script>
+<script>${jsContent}<\/script>
 </body>
 </html>`;
+      const iframeDoc = document.getElementById("preview").contentDocument;
+      iframeDoc.open();
+      iframeDoc.write(finalDoc);
+      iframeDoc.close();
 
-      const blob = new Blob([finalCode], { type: "text/html" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "my-code.html";
-      link.click();
+      // Save
+      localStorage.setItem("htmlCode", htmlContent);
+      localStorage.setItem("cssCode", cssContent);
+      localStorage.setItem("jsCode", jsContent);
+
+      checkErrors(htmlContent);
     }
 
-    // Basic tag error checker
+    // Error checking
     function checkErrors(html) {
       const errorBox = document.getElementById("errorBox");
       errorBox.style.display = "none";
       const openTags = [];
       const regex = /<\/?([a-zA-Z0-9]+)(\s[^>]*)?>/g;
       let match;
+      const voidElements = ["area","base","br","col","embed","hr","img","input","link","meta","param","source","track","wbr"];
+
       while ((match = regex.exec(html)) !== null) {
+        const tagName = match[1].toLowerCase();
         if (match[0][1] === "/") {
-          if (openTags.length === 0 || openTags[openTags.length - 1] !== match[1]) {
-            errorBox.innerText = `Error: Tag penutup </${match[1]}> tidak sesuai.`;
+          if (voidElements.includes(tagName)) continue;
+          if (openTags.length === 0 || openTags[openTags.length - 1] !== tagName) {
+            errorBox.innerText = `Error: Tag penutup </${tagName}> tidak sesuai.`;
             errorBox.style.display = "block";
             return;
           }
           openTags.pop();
         } else {
-          openTags.push(match[1]);
+          if (!voidElements.includes(tagName)) {
+            openTags.push(tagName);
+          }
         }
       }
       if (openTags.length > 0) {
@@ -248,8 +282,31 @@ ${jsContent}
       }
     }
 
+    function saveAsFile() {
+      const htmlContent = editors.html.getValue();
+      const cssContent = editors.css.getValue();
+      const jsContent = editors.js.getValue();
+      const finalCode = `
+<!DOCTYPE html>
+<html>
+<head>
+<style>${cssContent}</style>
+</head>
+<body>
+${htmlContent}
+<script>${jsContent}<\/script>
+</body>
+</html>`;
+      const blob = new Blob([finalCode], { type: "text/html" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "my-code.html";
+      link.click();
+    }
+
     window.onload = () => {
       initEditors();
+      openTab("html"); // ✅ aktifkan HTML dari awal → hilang bug putih
       runCode();
     };
   </script>
