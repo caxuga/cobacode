@@ -67,6 +67,16 @@
       flex: 1;
       height: 100%;
       font-size: 14px;
+      line-height: 1.4em;
+    }
+    /* Fix line number overlap */
+    .CodeMirror-lines {
+      padding: 0 0 0 4px;
+    }
+    .CodeMirror-gutters {
+      background: #2b2b2b;
+      color: #888;
+      border-right: 1px solid #444;
     }
     iframe#preview {
       width: 50%;
@@ -87,7 +97,7 @@
       font-size: 13px;
       display: none;
     }
-  </style>  
+  </style>
 </head>
 <body>
   <header>
