@@ -1,153 +1,252 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CobaCode</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/919/919827.png">
-<style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CobaCode</title>
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1006/1006363.png">
+  <!-- PrismJS CSS untuk highlight -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet"/>
+  <style>
     :root {
-        --bg-color: #1e1e1e;
-        --text-color: #f1f1f1;
-        --header-footer-bg: #222;
-        --tab-bg: #333;
-        --preview-bg: white;
-        --line-num-bg: #2b2b2b;
-        --line-num-color: #999;
-    }
-    body.light {
-        --bg-color: #ffffff;
-        --text-color: #222;
-        --header-footer-bg: #f0f0f0;
-        --tab-bg: #ddd;
-        --preview-bg: #ffffff;
-        --line-num-bg: #eee;
-        --line-num-color: #666;
+      --bg-color: #1e1e1e;
+      --text-color: #f1f1f1;
+      --header-footer-bg: #222;
+      --tab-bg: #333;
+      --preview-bg: #fff;
     }
     body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-        background-color: var(--bg-color);
-        color: var(--text-color);
+      margin: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-color);
+      color: var(--text-color);
     }
     header {
-        background-color: var(--header-footer-bg);
-        padding: 10px 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+      background: var(--header-footer-bg);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-    header h1 { margin: 0; font-size: 18px; }
+    header h1 { font-size: 18px; margin: 0; }
     .header-buttons button {
-        background: #4CAF50;
-        color: white;
-        border: none;
-        padding: 6px 12px;
-        cursor: pointer;
-        border-radius: 4px;
-        margin-left: 5px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      margin-left: 5px;
+      cursor: pointer;
+      border-radius: 4px;
     }
     main { flex: 1; display: flex; overflow: hidden; }
-    .editor-container {
-        width: 50%;
-        display: flex;
-        flex-direction: column;
-    }
+    .editor-container { width: 50%; display: flex; flex-direction: column; }
     .tabs { display: flex; background: var(--tab-bg); }
     .tabs button {
-        flex: 1;
-        padding: 8px;
-        background: var(--tab-bg);
-        color: var(--text-color);
-        border: none;
-        cursor: pointer;
+      flex: 1; padding: 8px;
+      background: var(--tab-bg);
+      border: none; cursor: pointer;
+      color: var(--text-color);
     }
-    .tabs button.active { background: #4CAF50; color: white; }
-    textarea {
-        flex: 1;
-        padding: 10px;
-        font-family: monospace;
-        font-size: 14px;
-        border: none;
-        outline: none;
-        resize: none;
-        background: var(--bg-color);
-        color: var(--text-color);
-        display: none;
+    .tabs button.active { background: #4CAF50; color: #fff; }
+    .editor-wrapper {
+      position: relative;
+      flex: 1;
+      background: var(--bg-color);
+      overflow: hidden;
     }
-    textarea.active { display: block; }
-    iframe { width: 50%; border: none; background: var(--preview-bg); }
-    footer {
-        background: var(--header-footer-bg);
-        color: var(--text-color);
-        text-align: center;
-        padding: 8px;
-        font-size: 14px;
+    textarea.code-input {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100%; height: 100%;
+      background: transparent;
+      color: transparent;
+      caret-color: var(--text-color);
+      font-family: monospace;
+      font-size: 14px;
+      line-height: 1.5em;
+      border: none;
+      outline: none;
+      resize: none;
+      padding: 10px 0 10px 40px;
+      z-index: 2;
+      white-space: pre;
+      overflow: auto;
+    }
+    .code-content {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      padding: 10px 0 10px 40px;
+      font-family: monospace;
+      font-size: 14px;
+      line-height: 1.5em;
+      white-space: pre;
+      pointer-events: none;
+      overflow: hidden;
+      color: var(--text-color);
+      z-index: 1;
     }
     .line-numbers {
-        margin: 0;
-        padding: 10px;
-        width: 40px;
-        background: var(--line-num-bg);
-        color: var(--line-num-color);
-        overflow: hidden;
-        text-align: right;
-        user-select: none;
-        font-family: monospace;
-        font-size: 14px;
-        display: none;
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 35px;
+      background: #2a2a2a;
+      text-align: right;
+      padding: 10px 5px;
+      font-size: 14px;
+      line-height: 1.5em;
+      color: #888;
+      user-select: none;
+      z-index: 3;
     }
-    #error-msg {
-        color: #ff4d4d;
-        font-size: 13px;
-        padding: 6px;
-        display: none;
-        background: #330000;
+    iframe#preview {
+      width: 50%;
+      height: 100%;
+      border: none;
+      background: var(--preview-bg);
     }
-    body.light #error-msg {
-        background: #ffe5e5;
-        color: #cc0000;
+    footer {
+      background: var(--header-footer-bg);
+      padding: 6px;
+      text-align: center;
+      font-size: 14px;
     }
-    @media (max-width: 768px) {
-        main { flex-direction: column; }
-        .editor-container, iframe { width: 100%; height: 50%; }
+    .error-box {
+      background: #a00;
+      color: #fff;
+      padding: 5px;
+      font-size: 13px;
+      display: none;
     }
-</style>
+  </style>
 </head>
 <body>
-<header>
+  <header>
     <h1>CobaCode</h1>
     <div class="header-buttons">
-        <button onclick="toggleTheme()">🌙/☀️</button>
-        <button onclick="runCode()">Run</button>
-        <button onclick="saveAsFile()">Save As</button>
+      <button onclick="toggleTheme()">🌙/☀️</button>
+      <button onclick="runCode()">Run</button>
+      <button onclick="saveAsFile()">Save As</button>
     </div>
-</header>
-<main>
+  </header>
+  <main>
     <div class="editor-container">
-        <div class="tabs">
-            <button class="tab-btn active" onclick="openTab('html')">HTML</button>
-            <button class="tab-btn" onclick="openTab('css')">CSS</button>
-            <button class="tab-btn" onclick="openTab('js')">JavaScript</button>
-        </div>
-
-        <pre id="lines-html" class="line-numbers" style="display:block;"></pre>
-        <textarea id="html" class="active"></textarea>
-        <div id="error-msg"></div>
-
-        <pre id="lines-css" class="line-numbers"></pre>
-        <textarea id="css"></textarea>
-
-        <pre id="lines-js" class="line-numbers"></pre>
-        <textarea id="js"></textarea>
+      <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('html')">HTML</button>
+        <button class="tab-btn" onclick="openTab('css')">CSS</button>
+        <button class="tab-btn" onclick="openTab('js')">JavaScript</button>
+      </div>
+      <div class="editor-wrapper">
+        <div class="line-numbers"></div>
+        <pre class="code-content language-html"></pre>
+        <textarea id="html" class="code-input" spellcheck="false"></textarea>
+      </div>
+      <div class="editor-wrapper" style="display:none;">
+        <div class="line-numbers"></div>
+        <pre class="code-content language-css"></pre>
+        <textarea id="css" class="code-input" spellcheck="false"></textarea>
+      </div>
+      <div class="editor-wrapper" style="display:none;">
+        <div class="line-numbers"></div>
+        <pre class="code-content language-js"></pre>
+        <textarea id="js" class="code-input" spellcheck="false"></textarea>
+      </div>
+      <div class="error-box" id="errorBox"></div>
     </div>
     <iframe id="preview"></iframe>
-</main>
-<footer>© 2025 dibuat dengan ❤️ oleh Agus Widodo FN.</footer>
-<script src="script.js"></script>
+  </main>
+  <footer>
+    © 2025 dibuat dengan ❤️ oleh Agus Widodo FN.
+  </footer>
+
+  <!-- PrismJS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-html.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+  <script>
+    function updateHighlight(textarea, overlay, lineNumbers) {
+      let code = textarea.value;
+      let lang = textarea.id === "html" ? "markup" : textarea.id;
+      overlay.innerHTML = Prism.highlight(code, Prism.languages[lang], lang);
+
+      // line numbers
+      let lines = code.split("\n").length;
+      lineNumbers.innerHTML = Array.from({length: lines}, (_, i) => i+1).join("\n");
+    }
+
+    function runCode() {
+      const html = document.getElementById("html").value;
+      const css = `<style>${document.getElementById("css").value}</style>`;
+      const js = `<script>${document.getElementById("js").value}<\/script>`;
+
+      const iframeDoc = document.getElementById("preview").contentDocument;
+      iframeDoc.open();
+      iframeDoc.write(html + css + js);
+      iframeDoc.close();
+
+      localStorage.setItem("htmlCode", html);
+      localStorage.setItem("cssCode", document.getElementById("css").value);
+      localStorage.setItem("jsCode", document.getElementById("js").value);
+    }
+
+    function saveAsFile() {
+      const htmlContent = document.getElementById("html").value;
+      const cssContent = document.getElementById("css").value;
+      const jsContent = document.getElementById("js").value;
+
+      const finalCode = `<!DOCTYPE html>
+<html>
+<head><style>${cssContent}</style></head>
+<body>
+${htmlContent}
+<script>${jsContent}<\/script>
+</body></html>`;
+
+      const blob = new Blob([finalCode], { type: "text/html" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "my-code.html";
+      link.click();
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("light");
+    }
+
+    function openTab(tab) {
+      document.querySelectorAll(".editor-wrapper").forEach((el, idx) => {
+        el.style.display = ["html","css","js"][idx] === tab ? "block" : "none";
+      });
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      event.target.classList.add("active");
+    }
+
+    window.onload = () => {
+      document.getElementById("html").value = localStorage.getItem("htmlCode") || `<h1>Hello World!</h1>\n<p>This is my first HTML page.</p>`;
+      document.getElementById("css").value = localStorage.getItem("cssCode") || `body {\n  font-family: Arial;\n  background:#f0f0f0;\n  color:#333;\n}\nh1{color:green;}`;
+      document.getElementById("js").value = localStorage.getItem("jsCode") || `console.log("Hello from JavaScript!");`;
+
+      document.querySelectorAll(".editor-wrapper").forEach(wrapper => {
+        const textarea = wrapper.querySelector("textarea");
+        const overlay = wrapper.querySelector(".code-content");
+        const lineNumbers = wrapper.querySelector(".line-numbers");
+        updateHighlight(textarea, overlay, lineNumbers);
+
+        textarea.addEventListener("input", () => {
+          updateHighlight(textarea, overlay, lineNumbers);
+        });
+        textarea.addEventListener("scroll", () => {
+          overlay.scrollTop = textarea.scrollTop;
+          lineNumbers.scrollTop = textarea.scrollTop;
+        });
+      });
+
+      runCode();
+    };
+  </script>
 </body>
 </html>
