@@ -4,34 +4,134 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CobaCode</title>
+
   <!-- CodeMirror CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/theme/material-darker.min.css">
+
   <style>
-    body { margin:0; font-family:Arial, sans-serif; height:100vh; display:flex; flex-direction:column; }
-    header { background:#222; color:#fff; padding:8px 16px; display:flex; justify-content:space-between; align-items:center; }
-    header h1 { font-size:16px; margin:0; }
-    .header-buttons button { margin-left:6px; padding:5px 12px; border:none; border-radius:4px; cursor:pointer; background:#4CAF50; color:white; }
-    main { flex:1; display:flex; overflow:hidden; }
-    .editor-container { width:50%; display:flex; flex-direction:column; }
-    .tabs { display:flex; background:#333; }
-    .tabs button { flex:1; padding:6px; border:none; background:#333; color:#fff; cursor:pointer; }
-    .tabs button.active { background:#4CAF50; }
-    .editor { flex:1; display:none; }
-    .editor.active { display:block; }
-    .CodeMirror { height:100%; }
-    .preview-container { width:50%; display:flex; flex-direction:column; border-left:1px solid #444; }
-    .browser-tabs { display:flex; background:#ddd; border-bottom:1px solid #aaa; }
-    .browser-tab { padding:4px 10px; border-right:1px solid #aaa; cursor:pointer; background:#ccc; font-size:13px; }
-    .browser-tab.active { background:#fff; font-weight:bold; }
-    .browser-tab.add { background:#4CAF50; color:white; }
-    .browser-header { background:#f5f5f5; border-bottom:1px solid #ccc; display:flex; align-items:center; gap:6px; padding:4px 8px; font-size:13px; }
-    .browser-header img { width:16px; height:16px; }
-    .browser-url { flex:1; font-size:13px; border:1px solid #ccc; border-radius:3px; padding:2px 6px; background:#fff; color:#555; }
-    .preview-frame { flex:1; border:none; display:none; }
-    .preview-frame.active { display:block; }
-    #errorBox { background:#f44336; color:#fff; padding:4px 8px; display:none; font-size:13px; }
-    footer { background:#222; color:#fff; text-align:center; font-size:13px; padding:6px; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #222;
+      color: #fff;
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { font-size: 16px; margin: 0; }
+    .header-buttons button {
+      margin-left: 6px;
+      padding: 5px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background: #4CAF50;
+      color: white;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+    .editor-container {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+    }
+    .tabs {
+      display: flex;
+      background: #333;
+    }
+    .tabs button {
+      flex: 1;
+      padding: 6px;
+      border: none;
+      background: #333;
+      color: #fff;
+      cursor: pointer;
+    }
+    .tabs button.active { background: #4CAF50; }
+    .editor { flex: 1; display: none; }
+    .editor.active { display: block; }
+    .CodeMirror { height: 100%; }
+
+    /* Browser-style preview */
+    .preview-container {
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid #444;
+    }
+    .browser-tabs {
+      background: #ddd;
+      display: flex;
+      align-items: center;
+      padding: 2px;
+      gap: 2px;
+    }
+    .browser-tab {
+      background: #eee;
+      padding: 2px 8px;
+      border-radius: 4px 4px 0 0;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      position: relative;
+    }
+    .browser-tab.active { background: #fff; border-bottom: 2px solid #4CAF50; }
+    .browser-tab img { width: 14px; height: 14px; }
+    .browser-tab .close-btn {
+      margin-left: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      color: #888;
+    }
+    .browser-tab .close-btn:hover { color: #f00; }
+    .add-tab { padding: 0 6px; cursor: pointer; font-weight: bold; color: #555; }
+
+    .browser-header {
+      background: #f5f5f5;
+      border-bottom: 1px solid #ccc;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      font-size: 13px;
+    }
+    #preview-url {
+      flex: 1;
+      font-size: 13px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      padding: 2px 6px;
+      background: #fff;
+      color: #555;
+    }
+    #preview { flex: 1; border: none; background: #fff; }
+
+    #errorBox {
+      background: #f44336;
+      color: #fff;
+      padding: 4px 8px;
+      display: none;
+      font-size: 13px;
+    }
+    footer {
+      background: #222;
+      color: #fff;
+      text-align: center;
+      font-size: 13px;
+      padding: 6px;
+    }
   </style>
 </head>
 <body>
@@ -44,6 +144,7 @@
   </header>
 
   <main>
+    <!-- Editor -->
     <div class="editor-container">
       <div class="tabs">
         <button class="tab-btn active" onclick="openTab('html')">HTML</button>
@@ -56,17 +157,16 @@
       <div id="errorBox"></div>
     </div>
 
+    <!-- Preview -->
     <div class="preview-container">
-      <div class="browser-tabs" id="browserTabs">
-        <div class="browser-tab active" onclick="switchPreview(0)">Tab 1</div>
-        <div class="browser-tab add" onclick="addPreviewTab()">+</div>
+      <div id="browser-tabs" class="browser-tabs">
+        <!-- Tab dinamis -->
+        <div class="add-tab" onclick="addBrowserTab()">+</div>
       </div>
       <div class="browser-header">
-        <img id="preview-favicon" src="favicon.png" alt="icon">
-        <span id="preview-title">Preview Page</span>
-        <input class="browser-url" id="preview-url" type="text" value="https://smaink-coding.com/" readonly>
+        <input id="preview-url" type="text" value="https://smaink-coding.com/" readonly>
       </div>
-      <iframe class="preview-frame active"></iframe>
+      <iframe id="preview"></iframe>
     </div>
   </main>
 
@@ -83,13 +183,12 @@
 
   <script>
     let editors = {};
-    let previewFrames = [];
+    let tabs = [];
+    let currentTabId = null;
 
     function initEditors() {
       editors.html = CodeMirror(document.getElementById("editor-html"), {
-        mode: "text/html",
-        theme: "material-darker",
-        lineNumbers: true
+        mode: "text/html", theme: "material-darker", lineNumbers: true
       });
       editors.css = CodeMirror(document.getElementById("editor-css"), {
         mode: "css", theme: "material-darker", lineNumbers: false
@@ -98,7 +197,6 @@
         mode: "javascript", theme: "material-darker", lineNumbers: false
       });
 
-      // default content
       editors.html.setValue(localStorage.getItem("htmlCode") || 
 `<!DOCTYPE html>
 <html>
@@ -107,16 +205,18 @@
   <link rel="icon" href="favicon.png">
 </head>
 <body>
-  <h1>Hello Murid SMAINK!</h1>
-  <p>Ini adalah contoh halaman HTML.</p>
+  <h1>Hello SMAINK!</h1>
+  <p>Ini contoh halaman HTML.</p>
 </body>
 </html>`);
       editors.css.setValue(localStorage.getItem("cssCode") || 
 `body { font-family: Arial, sans-serif; background: #f0f0f0; color: #333; }
 h1 { color: #4CAF50; }`);
-      editors.js.setValue(localStorage.getItem("jsCode") || `console.log("Hello from JavaScript!");`);
+      editors.js.setValue(localStorage.getItem("jsCode") || 
+`console.log("Hello from JavaScript!");`);
 
       Object.values(editors).forEach(ed => ed.on("change", runCode));
+      addBrowserTab();
     }
 
     function openTab(tab) {
@@ -127,14 +227,47 @@ h1 { color: #4CAF50; }`);
       editors[tab].refresh();
     }
 
+    function addBrowserTab() {
+      const id = "tab" + (Date.now());
+      const tabEl = document.createElement("div");
+      tabEl.className = "browser-tab";
+      tabEl.id = id;
+      tabEl.innerHTML = `<img src="favicon.png"><span>New Tab</span><span class="close-btn" onclick="closeTab(event, '${id}')">×</span>`;
+      tabEl.onclick = (e) => { if (!e.target.classList.contains("close-btn")) activateTab(id); };
+      const addBtn = document.querySelector(".add-tab");
+      document.getElementById("browser-tabs").insertBefore(tabEl, addBtn);
+      tabs.push({id, title: "New Tab", favicon: "favicon.png"});
+      activateTab(id);
+      runCode();
+    }
+
+    function activateTab(id) {
+      currentTabId = id;
+      document.querySelectorAll(".browser-tab").forEach(t => t.classList.remove("active"));
+      const tabEl = document.getElementById(id);
+      if (tabEl) tabEl.classList.add("active");
+    }
+
+    function closeTab(event, id) {
+      event.stopPropagation();
+      const tabEl = document.getElementById(id);
+      if (tabEl) tabEl.remove();
+      tabs = tabs.filter(t => t.id !== id);
+      if (currentTabId === id && tabs.length > 0) {
+        activateTab(tabs[0].id);
+        runCode();
+      }
+    }
+
     function runCode() {
+      if (!currentTabId) return;
+
       const htmlContent = editors.html.getValue();
       const cssContent = editors.css.getValue();
       const jsContent = editors.js.getValue();
 
       const titleMatch = htmlContent.match(/<title>(.*?)<\/title>/i);
       const pageTitle = titleMatch ? titleMatch[1] : "Preview Page";
-      document.getElementById("preview-title").innerText = pageTitle;
 
       const faviconMatch = htmlContent.match(/<link[^>]+rel=["']icon["'][^>]*>/i);
       let faviconUrl = "favicon.png";
@@ -142,13 +275,16 @@ h1 { color: #4CAF50; }`);
         const hrefMatch = faviconMatch[0].match(/href=["']([^"']+)["']/i);
         if (hrefMatch) faviconUrl = hrefMatch[1];
       }
-      document.getElementById("preview-favicon").src = faviconUrl;
 
-      document.getElementById("preview-url").value = "https://smaink-coding.com/";
+      const activeTab = document.getElementById(currentTabId);
+      if (activeTab) {
+        activeTab.querySelector("span").innerText = pageTitle;
+        activeTab.querySelector("img").src = faviconUrl;
+      }
 
       const finalDoc = `
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>${pageTitle}</title>
@@ -160,45 +296,16 @@ ${htmlContent}
 <script>${jsContent}<\/script>
 </body>
 </html>`;
+      const iframeDoc = document.getElementById("preview").contentDocument;
+      iframeDoc.open(); iframeDoc.write(finalDoc); iframeDoc.close();
 
-      // render di tab aktif
-      const activeFrame = document.querySelector(".preview-frame.active").contentDocument;
-      activeFrame.open(); activeFrame.write(finalDoc); activeFrame.close();
+      document.getElementById("preview-url").value = "https://smaink-coding.com/";
 
       localStorage.setItem("htmlCode", htmlContent);
       localStorage.setItem("cssCode", cssContent);
       localStorage.setItem("jsCode", jsContent);
 
       checkErrors(htmlContent);
-    }
-
-    function addPreviewTab() {
-      const newIndex = previewFrames.length + 1;
-      const newTab = document.createElement("div");
-      newTab.className = "browser-tab";
-      newTab.innerText = "Tab " + newIndex;
-      newTab.onclick = () => switchPreview(newIndex - 1);
-
-      document.getElementById("browserTabs").insertBefore(newTab, document.querySelector(".browser-tab.add"));
-
-      const newFrame = document.createElement("iframe");
-      newFrame.className = "preview-frame";
-      document.querySelector(".preview-container").appendChild(newFrame);
-      previewFrames.push(newFrame);
-
-      switchPreview(newIndex - 1);
-      runCode();
-    }
-
-    function switchPreview(index) {
-      document.querySelectorAll(".browser-tab").forEach(tab => tab.classList.remove("active"));
-      document.querySelectorAll(".preview-frame").forEach(frame => frame.classList.remove("active"));
-
-      const tabs = document.querySelectorAll(".browser-tab");
-      tabs[index].classList.add("active");
-
-      const frames = document.querySelectorAll(".preview-frame");
-      frames[index].classList.add("active");
     }
 
     function checkErrors(html) {
@@ -220,9 +327,7 @@ ${htmlContent}
           }
           openTags.pop();
         } else {
-          if (!voidElements.includes(tagName)) {
-            openTags.push(tagName);
-          }
+          if (!voidElements.includes(tagName)) openTags.push(tagName);
         }
       }
       if (openTags.length > 0) {
@@ -253,12 +358,7 @@ ${htmlContent}
       link.click();
     }
 
-    window.onload = () => {
-      initEditors();
-      previewFrames = [document.querySelector(".preview-frame")];
-      openTab("html");
-      runCode();
-    };
+    window.onload = () => { initEditors(); openTab("html"); runCode(); };
   </script>
 </body>
 </html>
